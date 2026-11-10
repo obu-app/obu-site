@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>obu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="obu">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  #stage { position: fixed; inset: 0; overflow: hidden; background: #000; touch-action: none; }
+  #app { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #000; opacity: 0; transition: opacity .5s ease; }
+  #app.on { opacity: 1; }
+  #load { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity .5s ease; pointer-events: none; }
+  #load img { width: 88px; height: 88px; border-radius: 50%; animation: breathe 2.2s ease-in-out infinite; }
+  @keyframes breathe { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
+  #msg { position: fixed; left: 24px; right: 24px; bottom: calc(40px + env(safe-area-inset-bottom)); color: #9AA0B8; font: 500 14px/1.45 -apple-system, system-ui, sans-serif; text-align: center; display: none; }
+</style>
+</head>
+<body>
+<div id="stage"><iframe id="app" src="app.html" title="obu" allow="autoplay"></iframe></div>
+<div id="load" aria-hidden="true"><img src="icon-192.png" alt=""></div>
+<p id="msg" role="status"></p>
+<script>
+/* obu home-screen demo wrapper (v1, 9 Nov 2026).
+   Loads the exported App v3 board (app.html) and shows only the phone screen,
+   scaled to fill this phone. Nothing in the app file is changed except the
+   preview bezel (border + rounded corners), which a real phone doesn't need. */
+(function () {
+  var SCREEN_W = 370, SCREEN_H = 824;          /* App v3 phone: 390 x 844 with a 10 px bezel */
+  var frame = document.getElementById('app');
+  var load = document.getElementById('load');
+  var msg = document.getElementById('msg');
+  var phone = null, tries = 0;
+
+  function say(t) { msg.textContent = t; msg.style.display = 'block'; }
+
+  function findPhone(doc, ox, oy, depth) {
+    /* the phone screen root in App v3 has class "ap-anim" and is 390 px wide.
+       The canvas export puts each board in its own (same-origin) iframe, so look inside frames too.
+       Returns { el, doc, x, y }: x / y = the phone's top-left in app.html's page coordinates. */
+    ox = ox || 0; oy = oy || 0; depth = depth || 0;
+    var list = doc.querySelectorAll('.ap-anim');
+    for (var i = 0; i < list.length; i++) {
+      var r = list[i].getBoundingClientRect();
+      if (r.width > 300 && r.height > 600) return { el: list[i], doc: doc, x: ox + r.left, y: oy + r.top };
+    }
+    if (depth > 3) return null;
+    var frames = doc.querySelectorAll('iframe');
+    for (var j = 0; j < frames.length; j++) {
+      var d; try { d = frames[j].contentDocument; } catch (e) { d = null; }
+      if (!d) continue;
+      var fr = frames[j].getBoundingClientRect();
+      var hit = findPhone(d, ox + fr.left + frames[j].clientLeft, oy + fr.top + frames[j].clientTop, depth + 1);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
+  function tidy(doc) {
+    if (doc.getElementById('obuDemoCss')) return;
+    var st = doc.createElement('style');
+    st.id = 'obuDemoCss';
+    st.textContent =
+      'html,body{overflow:hidden!important;background:#000!important;overscroll-behavior:none}' +
+      '#__bundler_err{display:none!important}' +
+      '.ap-anim{border-color:#000!important;border-radius:0!important;box-shadow:none!important}';
+    (doc.head || doc.documentElement).appendChild(st);
+  }
+
+  function fit() {
+    if (!phone) return;
+    var doc = frame.contentDocument;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var de = doc.documentElement;
+    /* give the iframe the board's full size so nothing inside reflows */
+    var bw = Math.max(de.scrollWidth, 560), bh = Math.max(de.scrollHeight, 1600);
+    frame.style.width = bw + 'px';
+    frame.style.height = bh + 'px';
+    var hit = findPhone(doc) || phone;
+    phone = hit;
+    var sx = hit.x + 10, sy = hit.y + 10;   /* inside the 10 px bezel */
+    var k = Math.min(vw / SCREEN_W, vh / SCREEN_H);
+    var ox = (vw - SCREEN_W * k) / 2, oy = (vh - SCREEN_H * k) / 2;
+    frame.style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + k + ') translate(' + (-sx) + 'px,' + (-sy) + 'px)';
+  }
+
+  function ready() {
+    tidy(frame.contentDocument);
+    if (phone.doc !== frame.contentDocument) {
+      tidy(phone.doc);
+      /* the export can hold other boards too: drop them so they don't use the phone's CPU */
+      var top = frame.contentDocument, fs = top.querySelectorAll('iframe');
+      for (var i = 0; i < fs.length; i++) {
+        var d; try { d = fs[i].contentDocument; } catch (e) { d = null; }
+        if (d !== phone.doc) { var box = fs[i].closest('section') || fs[i]; box.parentNode.removeChild(box); }
+      }
+      var hs = top.querySelectorAll('h1,h2');
+      for (var h = 0; h < hs.length; h++) hs[h].style.display = 'none';
+    }
+    fit();
+    /* fit again once fonts / images settle the layout */
+    setTimeout(fit, 400); setTimeout(fit, 1500);
+    frame.classList.add('on');
+    load.style.opacity = '0';
+  }
+
+  function poll() {
+    var doc;
+    try { doc = frame.contentDocument; } catch (e) { doc = null; }
+    if (!doc) { say('The app file must sit in the same folder as this page (app.html).'); return; }
+    phone = findPhone(doc);
+    if (phone) { ready(); return; }
+    if (++tries > 120) {           /* ~30 s: show the whole board instead of a blank screen */
+      frame.style.width = '100%'; frame.style.height = '100%';
+      frame.classList.add('on'); load.style.opacity = '0';
+      say('Couldn’t find the phone screen in app.html. Is it the App v3 export?');
+      return;
+    }
+    setTimeout(poll, 250);
+  }
+
+  frame.addEventListener('load', function () { tries = 0; poll(); });
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', function () { setTimeout(fit, 300); });
+  /* stop the outer page from rubber-banding on iOS */
+  document.addEventListener('touchmove', function (e) { if (e.target === document.body) e.preventDefault(); }, { passive: false });
+})();
+</script>
+</body>
+</html>

@@ -91,12 +91,17 @@
     var hit = findPhone(doc) || phone;
     phone = hit;
     var sx = hit.x + 10, sy = hit.y + 10;   /* inside the 10 px bezel */
-    var k = Math.min(vw / SCREEN_W, vh / SCREEN_H);
+    /* Fill the phone's width. The App v3 screen (370 x 824) is a bit taller than most iPhones
+       at full width, so the extra comes off the bottom: up to 40 design px, which is the
+       home-indicator strip under the tab bar. If more would be cut (e.g. Safari with its
+       toolbars showing), fit the whole screen instead and leave thin black bars. */
+    var kw = vw / SCREEN_W, kfit = Math.min(vw / SCREEN_W, vh / SCREEN_H);
+    var k = (SCREEN_H * kw - vh <= 40 * kw) ? kw : kfit;
     var ox = (vw - SCREEN_W * k) / 2, oy = Math.max(0, (vh - SCREEN_H * k) / 2);
     /* clip to exactly the phone screen so nothing around it (board background, bezel) can show */
     var clip = document.getElementById('clip');
     clip.style.left = ox + 'px'; clip.style.top = oy + 'px';
-    clip.style.width = (SCREEN_W * k) + 'px'; clip.style.height = (SCREEN_H * k) + 'px';
+    clip.style.width = (SCREEN_W * k) + 'px'; clip.style.height = Math.min(SCREEN_H * k, vh - oy) + 'px';
     frame.style.transform = 'scale(' + k + ') translate(' + (-sx) + 'px,' + (-sy) + 'px)';
   }
 

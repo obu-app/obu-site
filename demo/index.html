@@ -16,6 +16,7 @@
 <style>
   html, body { margin: 0; height: 100%; background: #000; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   #stage { position: fixed; inset: 0; overflow: hidden; background: #000; touch-action: none; }
+  #clip { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
   #app { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #000; opacity: 0; transition: opacity .5s ease; }
   #app.on { opacity: 1; }
   #load { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; transition: opacity .5s ease; pointer-events: none; }
@@ -25,7 +26,7 @@
 </style>
 </head>
 <body>
-<div id="stage"><iframe id="app" src="app.html" title="obu" allow="autoplay"></iframe></div>
+<div id="stage"><div id="clip"><iframe id="app" src="app.html" title="obu" allow="autoplay"></iframe></div></div>
 <div id="load" aria-hidden="true"><img src="icon-192.png" alt=""></div>
 <p id="msg" role="status"></p>
 <script>
@@ -89,7 +90,11 @@
     var sx = hit.x + 10, sy = hit.y + 10;   /* inside the 10 px bezel */
     var k = Math.min(vw / SCREEN_W, vh / SCREEN_H);
     var ox = (vw - SCREEN_W * k) / 2, oy = (vh - SCREEN_H * k) / 2;
-    frame.style.transform = 'translate(' + ox + 'px,' + oy + 'px) scale(' + k + ') translate(' + (-sx) + 'px,' + (-sy) + 'px)';
+    /* clip to exactly the phone screen so nothing around it (board background, bezel) can show */
+    var clip = document.getElementById('clip');
+    clip.style.left = ox + 'px'; clip.style.top = oy + 'px';
+    clip.style.width = (SCREEN_W * k) + 'px'; clip.style.height = (SCREEN_H * k) + 'px';
+    frame.style.transform = 'scale(' + k + ') translate(' + (-sx) + 'px,' + (-sy) + 'px)';
   }
 
   function ready() {

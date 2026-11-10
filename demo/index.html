@@ -79,7 +79,10 @@
   function fit() {
     if (!phone) return;
     var doc = frame.contentDocument;
-    var vw = window.innerWidth, vh = window.innerHeight;
+    /* use the area the user can actually see (Safari's toolbars can sit over the page) */
+    var vv = window.visualViewport;
+    var vw = Math.min(window.innerWidth, document.documentElement.clientWidth || 1e9, vv ? vv.width : 1e9);
+    var vh = Math.min(window.innerHeight, document.documentElement.clientHeight || 1e9, vv ? vv.height : 1e9);
     var de = doc.documentElement;
     /* give the iframe the board's full size so nothing inside reflows */
     var bw = Math.max(de.scrollWidth, 560), bh = Math.max(de.scrollHeight, 1600);
@@ -89,7 +92,7 @@
     phone = hit;
     var sx = hit.x + 10, sy = hit.y + 10;   /* inside the 10 px bezel */
     var k = Math.min(vw / SCREEN_W, vh / SCREEN_H);
-    var ox = (vw - SCREEN_W * k) / 2, oy = (vh - SCREEN_H * k) / 2;
+    var ox = (vw - SCREEN_W * k) / 2, oy = Math.max(0, (vh - SCREEN_H * k) / 2);
     /* clip to exactly the phone screen so nothing around it (board background, bezel) can show */
     var clip = document.getElementById('clip');
     clip.style.left = ox + 'px'; clip.style.top = oy + 'px';
@@ -134,6 +137,7 @@
 
   frame.addEventListener('load', function () { tries = 0; poll(); });
   window.addEventListener('resize', fit);
+  if (window.visualViewport) { window.visualViewport.addEventListener('resize', fit); }
   window.addEventListener('orientationchange', function () { setTimeout(fit, 300); });
   /* stop the outer page from rubber-banding on iOS */
   document.addEventListener('touchmove', function (e) { if (e.target === document.body) e.preventDefault(); }, { passive: false });

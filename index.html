@@ -788,22 +788,21 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 .gx-p:has(img[src*="sumi"]){--hc:255 215 160}
 .gal-t{display:none}
 .gal{margin-bottom:8px}
-/* leaderboard: this week's hours back, most first */
-.lb{position:relative;z-index:2;width:min(420px,100%);margin:0 auto;padding:6px 18px 8px;border-radius:24px;border:1px solid rgba(255,255,255,.09);background:rgba(12,12,24,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.lb-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 10px;font-size:var(--t-cap);color:var(--muted)}
-.lb-h span:first-child{letter-spacing:.08em;text-transform:uppercase}
-.lb-h b{color:#fff;font-weight:600}
-.lb ol{list-style:none;margin:0;padding:0}
-.lb li{display:grid;grid-template-columns:18px 40px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.07);font-size:var(--t-sm);color:#fff}
-.lb .rk{color:var(--muted);font-variant-numeric:tabular-nums;font-size:var(--t-cap)}
-.lb img{display:block;width:40px;height:40px}
-.lb .nm{display:grid;gap:6px;min-width:0;font-weight:500}
-.lb .bar{display:block;height:4px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
-.lb .bar i{display:block;height:100%;width:var(--w);border-radius:99px;background:rgb(var(--hc))}
-.lb .hr{font-weight:600;font-variant-numeric:tabular-nums}
-.lb .hr small{font-weight:400;color:var(--muted);font-size:var(--t-cap);margin-left:2px}
-.lb li.me{margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:14px;background:rgba(255,255,255,.06);border-top-color:transparent}.lb li.me+li{border-top-color:transparent}
-@media (min-width:900px){.lb{grid-column:2;grid-row:3;margin-top:-8px}}
+/* galaxy goal card (17 Nov, Henry: "something simple, a galaxy goal card where everyone achieves the goal") */
+.gg{position:relative;z-index:2;width:min(420px,100%);margin:0 auto;padding:18px 20px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.09);background:rgba(12,12,24,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.gg p{margin:0}
+.gg-k{display:flex;justify-content:space-between;font-size:var(--t-cap);color:var(--muted)}
+.gg-k span:first-child{letter-spacing:.08em;text-transform:uppercase;color:var(--acc);transition:color 1.2s ease-in-out}
+.gg-n{margin-top:10px!important;font-size:var(--t-body);color:var(--muted)}
+.gg-n b{font-size:34px;line-height:1;font-weight:600;letter-spacing:-.03em;color:#fff;margin-right:4px;font-variant-numeric:tabular-nums}
+.gg-bar{display:block;height:8px;margin-top:14px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden}
+.gg-bar i{display:block;width:88%;height:100%;border-radius:99px;background:linear-gradient(90deg,#7FB0F5,#BCA6FF)}
+.gg ul{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.gg li{display:grid;justify-items:center;gap:1px;font-size:var(--t-cap);color:var(--muted)}
+.gg li img{display:block;width:44px;height:44px;margin-bottom:2px}
+.gg li b{color:#fff;font-weight:600;font-size:var(--t-sm);font-variant-numeric:tabular-nums}
+.gg-f{margin-top:14px!important;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);font-size:var(--t-cap);color:var(--muted);text-align:center}
+@media (min-width:900px){.gg{grid-column:2;grid-row:3;margin-top:-8px}}
 </style>
 </head>
 <body>
@@ -994,9 +993,11 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
         <div class="gx-o" style="--pn:30" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/sylvara.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Dad</b>6h</span></div></div></div></div></div>
         <div class="gx-o" style="--pn:120" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/sumi.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Brother</b>4h</span></div></div></div></div></div>
       </figure>
-      <div class="lb" role="group" aria-label="This week's leaderboard: Sister 14 hours back, you 11, Mom 9, Dad 6, Brother 4. 44 hours back together.">
-        <p class="lb-h" aria-hidden="true"><span>This week</span><span><b>44h</b> back together</span></p>
-        <ol aria-hidden="true"><li style="--hc:255 150 200;--w:100%"><span class="rk">1</span><img src="assets/thumbs/petalis.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Sister</span><span class="bar"><i></i></span></span><span class="hr">14<small>h</small></span></li><li class="me" style="--hc:110 140 255;--w:79%"><span class="rk">2</span><img src="assets/thumbs/auralith.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>You</span><span class="bar"><i></i></span></span><span class="hr">11<small>h</small></span></li><li style="--hc:255 170 120;--w:64%"><span class="rk">3</span><img src="assets/thumbs/filara.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Mom</span><span class="bar"><i></i></span></span><span class="hr">9<small>h</small></span></li><li style="--hc:110 235 140;--w:43%"><span class="rk">4</span><img src="assets/thumbs/sylvara.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Dad</span><span class="bar"><i></i></span></span><span class="hr">6<small>h</small></span></li><li style="--hc:255 215 160;--w:29%"><span class="rk">5</span><img src="assets/thumbs/sumi.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Brother</span><span class="bar"><i></i></span></span><span class="hr">4<small>h</small></span></li></ol>
+      <div class="gg" role="group" aria-label="Galaxy goal this week: 44 of 50 hours back together. You 11, Sister 14, Mom 9, Dad 6, Brother 4.">
+        <p class="gg-k" aria-hidden="true"><span>Galaxy goal</span><span>This week</span></p>
+        <p class="gg-n" aria-hidden="true"><b>44</b> of 50h back, together</p>
+        <span class="gg-bar" aria-hidden="true"><i></i></span>
+        <p class="gg-f">Everyone's hours count toward one goal.</p>
       </div>
       <ul class="fam-list">
         <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17 14.2c2.2.2 3.6 1.6 4 4.3"/></svg><b>Invite up to five people</b><span>Follow each other's progress.</span></li>
@@ -1151,7 +1152,7 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
   <a class="btn btn-sm" href="#join" data-jump tabindex="-1">Join the waitlist</a>
 </div>
 
-<script src="assets/orbs-live/hero.js?v=15" defer></script>
+<script src="assets/orbs-live/hero.js?v=16" defer></script>
 <script>
 document.documentElement.classList.add('js');
 (function(){

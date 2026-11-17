@@ -1,4 +1,4 @@
-/* obu site hero · live orbs v1.5 (17 Nov 2026 · page accent starts 0.4 s into the swap, not after it · colours follow the orb: glow + accent fades 2.4 s -> 1.4 s, page accent right after the swap · spec claude/site-live-orb-hero-v1.md)
+/* obu site hero · live orbs v1.6 (17 Nov 2026 · swap = a 1.7 s cross-fade at one size (Henry: "no jump"), all bodies one width · page accent starts 0.4 s into the swap, not after it · colours follow the orb: glow + accent fades 2.4 s -> 1.4 s, page accent right after the swap · spec claude/site-live-orb-hero-v1.md)
    v1.3: fps guard 40 -> 24 (iPhone Low Power Mode draws at 30 fps, which froze the cycle on the first orb) · ?debug readout.
    Runs the app's real orb engines (assets/orbs-live/<name>.js) on the page through a small DCLogic shim.
    Every 6 s the next orb turns into view: the old one speeds up, shrinks and fades while the new one
@@ -23,14 +23,14 @@
      Site levelled 16 Nov by measuring each live orb at rest against Auralith (Rasenith is held wound up, so it's wider than its app still). */
   var ORBS = [
     { n: 'Auralith', e: 'auralith', key: 'auralith', fit: .663, up: .028, g1: '#7FB0F5', g2: '#BCA6FF', glow: '124 108 255' },
-    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .667,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140' },
-    { n: 'Rasenith', e: 'rasenith', key: 'rasenith', fit: .612, up: 0,    g1: '#C9E4FF', g2: '#5A9BFF', glow: '90 150 255' },
+    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .612,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140' },
+    { n: 'Rasenith', e: 'rasenith', key: 'rasenith', fit: .640, up: 0,    g1: '#C9E4FF', g2: '#5A9BFF', glow: '90 150 255' },
     { n: 'Filara',   e: 'filara',   key: 'thread',   fit: .703, up: 0,    g1: '#FFC48A', g2: '#D88BFF', glow: '206 120 255' },
-    { n: 'Petalis',  e: 'petalis',  key: 'sakura',   fit: .709, up: 0,    g1: '#FFC2D8', g2: '#E2588F', glow: '226 88 143' },
-    { n: 'Sumi',     e: 'sumi',     key: 'sumi',     fit: .557, up: .044, g1: '#FFF4E6', g2: '#D9A06A', glow: '255 196 140' }
+    { n: 'Petalis',  e: 'petalis',  key: 'sakura',   fit: .745, up: 0,    g1: '#FFC2D8', g2: '#E2588F', glow: '226 88 143' },
+    { n: 'Sumi',     e: 'sumi',     key: 'sumi',     fit: .590, up: .044, g1: '#FFF4E6', g2: '#D9A06A', glow: '255 196 140' }
   ];
   /* build = ms after a swap ends before the next engine is built (idle time) */
-  var T = { every: 6000, build: 2000, out: 1200, inDelay: 300, inDur: 1300, idle: 0.6, fast: 1.6, glow: 1200 };
+  var T = { every: 6000, build: 2000, out: 1700, inDelay: 0, inDur: 1700, idle: 0.6, fast: 0.9, glow: 1200 };
   /* render budget (v1.1): engines draw at 560 × dpr × q; buffer = shown size × min(dpr, 1.5), never over CAP px */
   var DPR = Math.min(window.devicePixelRatio || 1, 2), CAP = 720;
   /* pool: keep every engine after its first turn (paused engines cost no GPU time, a few MB each).
@@ -40,6 +40,7 @@
   if (cfg.every) { T.every = cfg.every; T.build = Math.min(T.build, cfg.every / 3); }
   if (cfg.cap) CAP = cfg.cap;
   if (typeof cfg.pool === 'number') POOL = cfg.pool;
+  var EASE_X = 'cubic-bezier(.45,0,.55,1)';   /* v1.6: plain cross-fade, same size, no grow / shrink */
   var EASE_IN = 'cubic-bezier(.32,0,.67,0)', EASE_OUT = 'cubic-bezier(.33,1,.68,1)';   /* = cubic in / out */
   var WAAPI = typeof Element !== 'undefined' && !!Element.prototype.animate;
 
@@ -251,11 +252,11 @@
   }
   function begin(now) {
     var out = cur, inn = next.h;
-    wake(inn); inn.spin = T.fast; look(inn, 1.12, 0);
+    wake(inn); inn.spin = T.fast; look(inn, 1, 0);
     idx = next.n; next = null; clock = 0;
     swap = { t0: now, out: out, inn: inn };
-    anim(out, [1, 1], [.86, 0], T.out, 0, EASE_IN);
-    anim(inn, [1.12, 0], [1, 1], T.inDur, T.inDelay, EASE_OUT);
+    anim(out, [1, 1], [1, 0], T.out, 0, EASE_X);
+    anim(inn, [1, 0], [1, 1], T.inDur, T.inDelay, EASE_X);
     themeHero(inn.o); label(inn.o);
     var po = inn.o; setTimeout(function () { themePage(po); }, 400);   /* v1.5: page accent changes during the swap, done with the orb */
   }
@@ -298,5 +299,5 @@
     var s = sizeOf();
     live.forEach(function (h) { h.inner.style.transform = 'scale(' + (s * .76 / h.o.fit / 560).toFixed(4) + ')'; });
   }).observe(stage);
-  window.__obuHeroState = function () { return { ver: '1.3', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
+  window.__obuHeroState = function () { return { ver: '1.6', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
 })();

@@ -68,11 +68,11 @@ main{overflow-x:clip;position:relative;z-index:0;background:linear-gradient(180d
 .hero{position:relative;padding:68px 0 40px;text-align:center}
 .hero .wrap{position:relative}
 .orb-stage{position:relative;width:min(290px,72vw);aspect-ratio:1;margin:0 auto 40px}
-.orb-stage::before{content:"";position:absolute;inset:-46%;background:radial-gradient(closest-side,rgb(var(--glow) / .30),rgb(var(--glow) / .10) 45%,rgb(var(--glow) / 0) 72%);pointer-events:none;transition:background 2.4s ease-in-out}
+.orb-stage::before{content:"";position:absolute;inset:-46%;background:radial-gradient(closest-side,rgb(var(--glow) / .30),rgb(var(--glow) / .10) 45%,rgb(var(--glow) / 0) 72%);pointer-events:none;transition:background 1.4s ease-in-out}
 @property --g1{syntax:'<color>';inherits:true;initial-value:#7FB0F5}
 @property --g2{syntax:'<color>';inherits:true;initial-value:#BCA6FF}
 .hero{--g1:#7FB0F5;--g2:#BCA6FF;--glow:124 108 255}
-.hero h1 .grad{transition:--g1 2.4s ease-in-out,--g2 2.4s ease-in-out} /* lag fix: animate the headline only, not the whole hero's style */
+.hero h1 .grad{transition:--g1 1.4s ease-in-out,--g2 1.4s ease-in-out} /* lag fix: animate the headline only, not the whole hero's style */
 .hero h1 .grad{display:inline-block;background-image:linear-gradient(90deg,#fff 0%,#fff 22%,var(--g1) 62%,var(--g2) 100%)}
 .hero h1 span.grad{display:inline-block;white-space:normal}
 /* hero orb: live engines (assets/orbs-live/hero.js). Wrappers animate transform + opacity only; engines render transparent. */
@@ -534,8 +534,8 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 /* accent v1 (16 Nov 14:41): the page accent = the orb showing in the hero (hero.js theme() sets --acc / --acc-rgb on :root).
    The variable itself is not animated (that would restyle the whole page each frame); each accent element transitions its own colour. */
 :root{--acc:#BCA6FF;--acc-rgb:124 108 255;--ember:#ff5a36}
-.strip .ico,.fam .ico,.sc-k,.months i,.tk i,.step-n,.callout,.callout small,.tag,.hold-notes li::before,.privacy li::before,.note .note-k,.plan.plus,.plan.plus h3,.plan.plus ul svg,.sec::before,.hours .sc::before,.scene::before,.plan.plus::before{transition:color 2.4s ease-in-out,background-color 2.4s ease-in-out,border-color 2.4s ease-in-out,box-shadow 2.4s ease-in-out,filter 2.4s ease-in-out}
-.faq summary::after{transition:transform .2s ease,border-color 2.4s ease-in-out}
+.strip .ico,.fam .ico,.sc-k,.months i,.tk i,.step-n,.callout,.callout small,.tag,.hold-notes li::before,.privacy li::before,.note .note-k,.plan.plus,.plan.plus h3,.plan.plus ul svg,.sec::before,.hours .sc::before,.scene::before,.plan.plus::before{transition:color 1.4s ease-in-out,background-color 1.4s ease-in-out,border-color 1.4s ease-in-out,box-shadow 1.4s ease-in-out,filter 1.4s ease-in-out}
+.faq summary::after{transition:transform .2s ease,border-color 1.4s ease-in-out}
 .sec::before{background:none;background-color:rgb(var(--acc-rgb) / .11);-webkit-mask-image:radial-gradient(ellipse 65% 30% at var(--gx,20%) 34%,#000,transparent 70%);mask-image:radial-gradient(ellipse 65% 30% at var(--gx,20%) 34%,#000,transparent 70%)}
 .strip .ico,.fam .ico{color:var(--acc);filter:drop-shadow(0 0 10px rgb(var(--acc-rgb) / .55))}
 .hours .sc{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015))}
@@ -589,11 +589,11 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 
 /* orb name v2 (16 Nov 14:54): kept, heavier, white -> the orb's own colour; fades with the orb like the headline */
 .orb-name{font-size:14px;font-weight:600;letter-spacing:.18em;color:#fff;bottom:-26px;left:50%;right:auto;width:max-content;transform:translateX(-50%);padding-left:.18em}
-.orb-name{background-image:linear-gradient(90deg,#fff 0%,#fff 20%,var(--g2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transition:opacity .5s ease,--g2 2.4s ease-in-out}
+.orb-name{background-image:linear-gradient(90deg,#fff 0%,#fff 20%,var(--g2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transition:opacity .5s ease,--g2 1.4s ease-in-out}
 
 /* orb name v3 (16 Nov 14:59, Henry: gradient doesn't look good): a small chip, white name + one dot in the orb's colour */
 .orb-name{background-image:none;-webkit-text-fill-color:currentColor;color:#fff;display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background-color:rgba(255,255,255,.05);font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:none;bottom:-34px;transition:opacity .5s ease}
-.orb-name::before{content:"";width:8px;height:8px;border-radius:50%;background-color:var(--g2);box-shadow:0 0 10px var(--g2);transition:background-color 2.4s ease-in-out,box-shadow 2.4s ease-in-out}
+.orb-name::before{content:"";width:8px;height:8px;border-radius:50%;background-color:var(--g2);box-shadow:0 0 10px var(--g2);transition:background-color 1.4s ease-in-out,box-shadow 1.4s ease-in-out}
 /* phones: all three the same size, uncropped (Henry: "the phone sizes aren't the same") */
 .steps .shot,.steps .shot.crop-low,.steps .shot.crop-high{aspect-ratio:auto;-webkit-mask-image:none;mask-image:none;overflow:visible;width:min(280px,74vw);margin:28px auto 0}
 .steps .shot img,.steps .shot.crop-low img,.steps .shot.crop-high img{position:static;box-shadow:0 30px 80px -24px rgba(0,0,0,.7)}
@@ -648,10 +648,10 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 }
 /* galaxy v2: a lit card, bigger orbs, hours as chips */
 .gal{width:min(360px,90vw);border-radius:32px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012));overflow:hidden}
-.gal::before{content:"";position:absolute;inset:0;pointer-events:none;background-color:rgb(var(--acc-rgb) / .30);-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);transition:background-color 2.4s ease-in-out}
+.gal::before{content:"";position:absolute;inset:0;pointer-events:none;background-color:rgb(var(--acc-rgb) / .30);-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);transition:background-color 1.4s ease-in-out}
 .gal .ring{border-color:rgba(255,255,255,.16)}
 .gal .r1{width:50%;height:50%}.gal .r2{width:80%;height:80%;border-color:rgba(255,255,255,.12)}
-.gal-k{position:absolute;left:18px;top:16px;font-size:var(--t-cap);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);transition:color 2.4s ease-in-out}
+.gal-k{position:absolute;left:18px;top:16px;font-size:var(--t-cap);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);transition:color 1.4s ease-in-out}
 .who{width:96px;transform:translate(-50%,-38px)}
 .who img{width:64px;height:64px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}
 .who b{font-size:var(--t-body);font-weight:600;margin-top:0}
@@ -720,7 +720,7 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 .s1 ul{gap:0;margin-top:22px;padding:2px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
 .s1 li{position:relative;padding:15px 0 15px 50px;min-height:66px;align-content:center}
 .s1 li+li{border-top:1px solid rgba(255,255,255,.07)}
-.s1 li svg{position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;padding:8px;border-radius:11px;color:var(--acc);background:rgb(var(--acc-rgb) / .14);transition:color 2.4s ease-in-out,background-color 2.4s ease-in-out}
+.s1 li svg{position:absolute;left:0;top:50%;width:36px;height:36px;margin-top:-18px;padding:8px;border-radius:11px;color:var(--acc);background:rgb(var(--acc-rgb) / .14);transition:color 1.4s ease-in-out,background-color 1.4s ease-in-out}
 /* galaxy: no card, it sits on the page background */
 .gal{border:0;border-radius:0;background:none;overflow:visible}
 .gal::after{content:none}
@@ -1086,7 +1086,7 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
   <a class="btn btn-sm" href="#join" data-jump tabindex="-1">Join the waitlist</a>
 </div>
 
-<script src="assets/orbs-live/hero.js?v=13" defer></script>
+<script src="assets/orbs-live/hero.js?v=14" defer></script>
 <script>
 document.documentElement.classList.add('js');
 (function(){

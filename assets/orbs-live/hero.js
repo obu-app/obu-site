@@ -1,4 +1,4 @@
-/* obu site hero · live orbs v1.3 (17 Nov 2026 · spec claude/site-live-orb-hero-v1.md)
+/* obu site hero · live orbs v1.4 (17 Nov 2026 · colours follow the orb: glow + accent fades 2.4 s -> 1.4 s, page accent right after the swap · spec claude/site-live-orb-hero-v1.md)
    v1.3: fps guard 40 -> 24 (iPhone Low Power Mode draws at 30 fps, which froze the cycle on the first orb) · ?debug readout.
    Runs the app's real orb engines (assets/orbs-live/<name>.js) on the page through a small DCLogic shim.
    Every 6 s the next orb turns into view: the old one speeds up, shrinks and fades while the new one
@@ -30,7 +30,7 @@
     { n: 'Sumi',     e: 'sumi',     key: 'sumi',     fit: .557, up: .044, g1: '#FFF4E6', g2: '#D9A06A', glow: '255 196 140' }
   ];
   /* build = ms after a swap ends before the next engine is built (idle time) */
-  var T = { every: 6000, build: 2000, out: 1200, inDelay: 300, inDur: 1300, idle: 0.6, fast: 1.6, glow: 2400 };
+  var T = { every: 6000, build: 2000, out: 1200, inDelay: 300, inDur: 1300, idle: 0.6, fast: 1.6, glow: 1400 };
   /* render budget (v1.1): engines draw at 560 × dpr × q; buffer = shown size × min(dpr, 1.5), never over CAP px */
   var DPR = Math.min(window.devicePixelRatio || 1, 2), CAP = 720;
   /* pool: keep every engine after its first turn (paused engines cost no GPU time, a few MB each).
@@ -269,7 +269,7 @@
     s.inn.spin = T.fast + (T.idle - T.fast) * easeOut(v);
     if (v >= 1 && (!s.out || s.out.held)) {
       cur = s.inn; cur.spin = T.idle; stopAnim(cur); look(cur, 1, 1); swap = null; fpsT = 0; fpsN = 0; slowFor = 0;
-      var o = cur.o; idle(function () { themePage(o); }, 1200);
+      var o = cur.o; idle(function () { themePage(o); }, 250);
       preload();
     }
   }

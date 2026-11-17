@@ -1,4 +1,5 @@
-/* obu site hero · live orbs v1.2 (17 Nov 2026 · no-lag pass, spec claude/site-live-orb-hero-v1.md)
+/* obu site hero · live orbs v1.3 (17 Nov 2026 · spec claude/site-live-orb-hero-v1.md)
+   v1.3: fps guard 40 -> 24 (iPhone Low Power Mode draws at 30 fps, which froze the cycle on the first orb) · ?debug readout.
    Runs the app's real orb engines (assets/orbs-live/<name>.js) on the page through a small DCLogic shim.
    Every 6 s the next orb turns into view: the old one speeds up, shrinks and fades while the new one
    grows in from 1.12 and slows to the idle spin.
@@ -56,7 +57,17 @@
     b.style.cssText = 'position:absolute;left:' + (50 - 50 * k) + '%;top:' + (50 - 50 * k - 100 * o.up * k) + '%;width:' + 100 * k + '%;height:' + 100 * k + '%';
     return b;
   }
-  if (reduce || !hasGL()) { still(ORBS[0]); return; }
+  /* ?debug: a small on-screen readout of why the orb is / isn't live */
+  var why = 'starting', lastFps = 0, DBG = /[?&]debug\b/.test(location.search), dbgEl = null;
+  function dbg() {
+    if (!DBG) return;
+    if (!dbgEl) { dbgEl = document.createElement('pre'); dbgEl.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;margin:0;padding:8px 10px;max-width:92vw;white-space:pre-wrap;font:12px/1.4 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.3);border-radius:8px'; document.body.appendChild(dbgEl); }
+    var s = window.__obuHeroState ? window.__obuHeroState() : null;
+    dbgEl.textContent = 'hero v1.3 · ' + why + '\nreduce motion: ' + (reduce ? 'ON' : 'off') + ' · WebGL: ' + (hasGL() ? 'yes' : 'NO') +
+      (s ? '\nshowing: ' + (s.cur || 'still image') + ' · fps: ' + Math.round(lastFps) + ' · cycle: ' + (s.stopped ? 'STOPPED (slow)' : 'on') + '\nbuilt: ' + s.live.join(', ') : '');
+  }
+  if (DBG) { window.addEventListener('error', function (e) { why = 'error: ' + e.message; dbg(); }); setInterval(dbg, 500); }
+  if (reduce || !hasGL()) { why = reduce ? 'still: Reduce Motion is on' : 'still: no WebGL'; still(ORBS[0]); dbg(); return; }
 
   /* ---------- stage glow: stacked layers, opacity cross-fade (compositor only) ---------- */
   (function () {
@@ -267,25 +278,25 @@
     var e = ORBS[(idx + 1) % ORBS.length].e; if (pool[e]) return;
     idle(function () { load(e).catch(function () {}); }, 2500);
   }
-  /* fps guard: only while one orb is alone on screen; < 40 fps averaged over 2 s = keep this orb, stop cycling */
+  /* fps guard: only while one orb is alone on screen; < 24 fps averaged over 2 s = keep this orb, stop cycling */
   function fps(now, dt) {
     if (cfg.noFpsGuard || stopped || swap || (next && !next.h) || !cur || now < (cur.inUntil || 0)) { fpsT = 0; fpsN = 0; return; }
     fpsT += dt; fpsN++;
     if (fpsT >= 500) {
       var f = fpsN * 1000 / fpsT; fpsT = 0; fpsN = 0;
-      slowFor = f < 40 ? slowFor + 500 : 0;
+      lastFps = f; slowFor = f < 24 ? slowFor + 500 : 0;
       if (slowFor >= 2000) { stopped = true; host.setAttribute('data-held', '1'); }
     }
   }
 
   /* ---------- start ---------- */
   poster = still(ORBS[0]); poster.classList.add('lv-poster');
-  mount(ORBS[0]).then(function (h) { first = h; kick(); preload(); }).catch(function () { /* keep the still */ });
+  mount(ORBS[0]).then(function (h) { first = h; why = 'live'; kick(); preload(); }).catch(function (e) { why = 'still: engine failed (' + (e && e.message || e) + ')'; /* keep the still */ });
   document.addEventListener('visibilitychange', function () { if (!document.hidden) kick(); });
   if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; if (onScreen) kick(); }).observe(stage);
   if ('ResizeObserver' in window) new ResizeObserver(function () {
     var s = sizeOf();
     live.forEach(function (h) { h.inner.style.transform = 'scale(' + (s * .76 / h.o.fit / 560).toFixed(4) + ')'; });
   }).observe(stage);
-  window.__obuHeroState = function () { return { ver: '1.2', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
+  window.__obuHeroState = function () { return { ver: '1.3', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
 })();

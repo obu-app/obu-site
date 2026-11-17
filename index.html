@@ -777,27 +777,33 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 /* new orb stills have more air around the body: draw them larger */
 .gal{--os:68px;--ys:116px}
 @media (min-width:900px){.gal{--os:98px;--ys:158px}}
-/* galaxy v5 (17 Nov, Henry: "just rotation feels flat"): each orb is alive on its own.
-   Slow self-turn + breathing + a pulsing halo in its own colour, all out of step with each other.
-   Transform / opacity only (rotate + scale properties), so it stays on the compositor. */
-@keyframes gxturn{to{rotate:360deg}}
-@keyframes gxbreath{from{scale:.94}to{scale:1.07}}
-@keyframes gxsway{from{rotate:-5deg;scale:.96}to{rotate:5deg;scale:1.06}}
-@keyframes gxhalo{from{opacity:.35;transform:translateX(-50%) scale(.82)}to{opacity:.95;transform:translateX(-50%) scale(1.18)}}
-.gx-p img{animation:gxdim var(--T) linear infinite,gxturn var(--tt,46s) linear infinite,gxbreath var(--tb,4.6s) ease-in-out infinite alternate;animation-delay:calc(var(--pn) / -360 * var(--T)),calc(var(--pn) * -.11s),calc(var(--pn) * -.013s)}
-.gx-p img[src*="sumi"]{animation:gxdim var(--T) linear infinite,gxsway 5.2s ease-in-out infinite alternate;animation-delay:calc(var(--pn) / -360 * var(--T)),-1.3s}
-.gx-p img[src*="petalis"]{--tt:70s;--tb:5.8s}
-.gx-p img[src*="sylvara"]{--tt:34s;--tb:3.8s}
-.gx-you img{animation:gxturn 80s linear infinite reverse,gxbreath 5s ease-in-out infinite alternate}
-.gx-p::before,.gx-you::before{content:"";position:absolute;left:50%;top:calc(var(--os) * -.3);z-index:-1;width:calc(var(--os) * 1.6);height:calc(var(--os) * 1.6);border-radius:50%;pointer-events:none;
-  background:radial-gradient(closest-side,rgb(var(--hc,170 150 255) / .55),rgb(var(--hc,170 150 255) / .16) 55%,transparent 100%);
-  transform:translateX(-50%);animation:gxhalo var(--th,3.6s) ease-in-out infinite alternate;animation-delay:calc(var(--pn,0) * -.017s)}
-.gx-you::before{top:calc(var(--ys) * -.3);width:calc(var(--ys) * 1.6);height:calc(var(--ys) * 1.6);--hc:110 140 255;--th:4.4s}
-.gx-p:has(img[src*="petalis"]){--hc:255 150 200;--th:4.2s}
-.gx-p:has(img[src*="filara"]){--hc:255 170 120;--th:3.1s}
-.gx-p:has(img[src*="sylvara"]){--hc:110 235 140;--th:2.9s}
-.gx-p:has(img[src*="sumi"]){--hc:255 215 160;--th:3.8s}
-@media (prefers-reduced-motion:reduce){.gx-p img,.gx-you img,.gx-p::before,.gx-you::before{animation:none}}
+/* galaxy v6 (17 Nov, Henry: keep the orbs still; show the leaderboard under the galaxy).
+   Orbs = still images on the orbit, each with a soft fixed halo in its own colour. */
+.gx-p::before,.gx-you::before{content:"";position:absolute;left:50%;top:calc(var(--os) * -.3);z-index:-1;width:calc(var(--os) * 1.6);height:calc(var(--os) * 1.6);border-radius:50%;pointer-events:none;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgb(var(--hc,170 150 255) / .42),rgb(var(--hc,170 150 255) / .12) 55%,transparent 100%)}
+.gx-you::before{top:calc(var(--ys) * -.3);width:calc(var(--ys) * 1.6);height:calc(var(--ys) * 1.6);--hc:110 140 255}
+.gx-p:has(img[src*="petalis"]){--hc:255 150 200}
+.gx-p:has(img[src*="filara"]){--hc:255 170 120}
+.gx-p:has(img[src*="sylvara"]){--hc:110 235 140}
+.gx-p:has(img[src*="sumi"]){--hc:255 215 160}
+.gal-t{display:none}
+.gal{margin-bottom:8px}
+/* leaderboard: this week's hours back, most first */
+.lb{position:relative;z-index:2;width:min(420px,100%);margin:0 auto;padding:6px 18px 8px;border-radius:24px;border:1px solid rgba(255,255,255,.09);background:rgba(12,12,24,.55);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.lb-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0 10px;font-size:var(--t-cap);color:var(--muted)}
+.lb-h span:first-child{letter-spacing:.08em;text-transform:uppercase}
+.lb-h b{color:#fff;font-weight:600}
+.lb ol{list-style:none;margin:0;padding:0}
+.lb li{display:grid;grid-template-columns:18px 40px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.07);font-size:var(--t-sm);color:#fff}
+.lb .rk{color:var(--muted);font-variant-numeric:tabular-nums;font-size:var(--t-cap)}
+.lb img{display:block;width:40px;height:40px}
+.lb .nm{display:grid;gap:6px;min-width:0;font-weight:500}
+.lb .bar{display:block;height:4px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.lb .bar i{display:block;height:100%;width:var(--w);border-radius:99px;background:rgb(var(--hc))}
+.lb .hr{font-weight:600;font-variant-numeric:tabular-nums}
+.lb .hr small{font-weight:400;color:var(--muted);font-size:var(--t-cap);margin-left:2px}
+.lb li.me{margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:14px;background:rgba(255,255,255,.06);border-top-color:transparent}.lb li.me+li{border-top-color:transparent}
+@media (min-width:900px){.lb{grid-column:2;grid-row:3;margin-top:-8px}}
 </style>
 </head>
 <body>
@@ -988,6 +994,10 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
         <div class="gx-o" style="--pn:30" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/sylvara.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Dad</b>6h</span></div></div></div></div></div>
         <div class="gx-o" style="--pn:120" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/sumi.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Brother</b>4h</span></div></div></div></div></div>
       </figure>
+      <div class="lb" role="group" aria-label="This week's leaderboard: Sister 14 hours back, you 11, Mom 9, Dad 6, Brother 4. 44 hours back together.">
+        <p class="lb-h" aria-hidden="true"><span>This week</span><span><b>44h</b> back together</span></p>
+        <ol aria-hidden="true"><li style="--hc:255 150 200;--w:100%"><span class="rk">1</span><img src="assets/thumbs/petalis.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Sister</span><span class="bar"><i></i></span></span><span class="hr">14<small>h</small></span></li><li class="me" style="--hc:110 140 255;--w:79%"><span class="rk">2</span><img src="assets/thumbs/auralith.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>You</span><span class="bar"><i></i></span></span><span class="hr">11<small>h</small></span></li><li style="--hc:255 170 120;--w:64%"><span class="rk">3</span><img src="assets/thumbs/filara.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Mom</span><span class="bar"><i></i></span></span><span class="hr">9<small>h</small></span></li><li style="--hc:110 235 140;--w:43%"><span class="rk">4</span><img src="assets/thumbs/sylvara.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Dad</span><span class="bar"><i></i></span></span><span class="hr">6<small>h</small></span></li><li style="--hc:255 215 160;--w:29%"><span class="rk">5</span><img src="assets/thumbs/sumi.webp" alt="" width="440" height="440" loading="lazy" decoding="async"><span class="nm"><span>Brother</span><span class="bar"><i></i></span></span><span class="hr">4<small>h</small></span></li></ol>
+      </div>
       <ul class="fam-list">
         <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17 14.2c2.2.2 3.6 1.6 4 4.3"/></svg><b>Invite up to five people</b><span>Follow each other's progress.</span></li>
         <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 4l16 16"/></svg><b>They see progress only</b><span>Never your apps or your minutes.</span></li>

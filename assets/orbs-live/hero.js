@@ -23,7 +23,7 @@
      Site levelled 16 Nov by measuring each live orb at rest against Auralith (Rasenith is held wound up, so it's wider than its app still). */
   var ORBS = [
     { n: 'Auralith', e: 'auralith', key: 'auralith', fit: .663, up: .028, g1: '#7FB0F5', g2: '#BCA6FF', glow: '124 108 255' },
-    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .612,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140', gk: .45, gs: .46 },
+    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .612,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140', gk: .72, gs: .46 },
     { n: 'Rasenith', e: 'rasenith', key: 'rasenith', fit: .640, up: 0,    g1: '#C9E4FF', g2: '#5A9BFF', glow: '90 150 255' },
     { n: 'Filara',   e: 'filara',   key: 'thread',   fit: .703, up: 0,    g1: '#FFC48A', g2: '#D88BFF', glow: '206 120 255' },
     { n: 'Petalis',  e: 'petalis',  key: 'sakura',   fit: .745, up: 0,    g1: '#FFC2D8', g2: '#E2588F', glow: '226 88 143' },
@@ -57,7 +57,7 @@
     var k = .76 / o.fit, b = document.createElement('div'); b.className = 'lv-box';
     b.style.cssText = 'position:absolute;left:' + (50 - 50 * k) + '%;top:' + (50 - 50 * k - 100 * o.up * k) + '%;width:' + 100 * k + '%;height:' + 100 * k + '%';
     /* v1.10: Sylvara's body is a flat disc with a crisp rim; a static radial mask feathers it (loops past the rim fade out softly) */
-    if (o.e === 'sylvara') { var m = 'radial-gradient(closest-side,#000 54%,rgba(0,0,0,.6) 64%,rgba(0,0,0,.25) 76%,rgba(0,0,0,.06) 88%,transparent 98%)'; b.style.webkitMaskImage = m; b.style.maskImage = m; }
+    if (o.e === 'sylvara') { var m = 'radial-gradient(closest-side,#000 60%,rgba(0,0,0,.62) 69%,rgba(0,0,0,.26) 79%,rgba(0,0,0,.06) 90%,transparent 99%)'; b.style.webkitMaskImage = m; b.style.maskImage = m; }
     return b;
   }
   /* ?debug: a small on-screen readout of why the orb is / isn't live */
@@ -307,5 +307,5 @@
     var s = sizeOf();
     live.forEach(function (h) { h.inner.style.transform = 'scale(' + (s * .76 / h.o.fit / 560).toFixed(4) + ')'; });
   }).observe(stage);
-  window.__obuHeroState = function () { return { ver: '1.10', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
+  window.__obuHeroState = function () { return { ver: '1.11', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
 })();

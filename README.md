@@ -4,7 +4,7 @@ The obu-app.com website, served by GitHub Pages from `main` (root).
 
 | Path | What it is |
 |---|---|
-| `/` (`index.html`) | Holding page until the landing page (Site board export) goes live |
+| `/` (`index.html`) + `assets/` | Landing page (Website artifact `final/`, paths flattened). Waitlist: set `WAITLIST_URL` (Kit) at the top of the page script; empty = sign-ups go to hello@obu-app.com by email |
 | `/demo/` | iPhone home-screen demo of the App v3 design (design only, no real blocking) |
 
 ## Update the demo

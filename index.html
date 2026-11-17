@@ -2,33 +2,1154 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>obu · The screen time app for iPhone</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="obu blocks the apps that pull you in, and grows a living orb while you stay off them. Coming soon to iPhone.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>obu — the screen time app for iPhone. Join the waitlist.</title>
+<meta name="description" content="obu blocks the apps you open out of habit, and shows every hour you win back. Join the waitlist for the iPhone beta.">
 <meta name="theme-color" content="#05060D">
-<link rel="icon" type="image/png" href="icon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:title" content="obu — Look up. Make time for what matters.">
+<meta property="og:description" content="The screen time app for iPhone. obu blocks the apps you open out of habit, and shows every hour you win back.">
+<meta name="twitter:card" content="summary">
 <style>
-  html, body { margin: 0; height: 100%; }
-  body { background: #05060D; color: #F4F6FF; font-family: Inter, -apple-system, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; box-sizing: border-box; }
-  main { max-width: 420px; }
-  .mark { display: inline-flex; align-items: center; gap: 14px; }
-  .mark img { width: 56px; height: 56px; border-radius: 50%; }
-  .mark span { font-family: Outfit, sans-serif; font-weight: 500; font-size: 52px; letter-spacing: -0.02em; line-height: 1; }
-  h1 { font-family: Outfit, sans-serif; font-weight: 500; font-size: 26px; letter-spacing: -0.01em; margin: 36px 0 10px; }
-  p { margin: 0; font-size: 16px; line-height: 1.5; color: #A9AEC6; }
-  .soon { margin-top: 28px; display: inline-block; padding: 9px 16px; border-radius: 999px; border: 1px solid rgba(244,246,255,.16); font-size: 14px; font-weight: 500; color: #F4F6FF; }
+@font-face{font-family:"Geist";src:url(assets/fonts/geist.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Outfit";src:url(assets/fonts/outfit-500.woff2) format("woff2");font-weight:500;font-display:swap}
+:root{
+  --night:#05060D;
+  --raised:#0B0D19;
+  --raised-2:#11142400;
+  --line:rgba(255,255,255,.10);
+  --line-soft:rgba(255,255,255,.06);
+  --text:#F3F2F8;
+  --muted:#A9ABBF;
+  --violet:#A68BFF;
+  --blue:#4F8FE8;
+  --good:#8FE3B4;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --pad:24px;
+  --max:1120px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--night);color:var(--text);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+h1,h2{font-family:var(--sans);font-weight:500;letter-spacing:-.04em;line-height:1.02;text-wrap:balance}
+h2{font-size:clamp(31px,4.4vw,48px)}
+.grad{background:linear-gradient(90deg,#7FB0F5,#BCA6FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+h3{font-family:var(--sans);font-weight:600;font-size:19px;letter-spacing:-.01em;line-height:1.3}
+.wrap{width:100%;max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.muted{color:var(--muted)}
+.lede{color:var(--muted);font-size:18px;max-width:34em;margin-top:16px}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:6px}
+main{overflow-x:clip;position:relative;z-index:0;background:linear-gradient(180deg,rgba(38,30,92,0) 0,rgba(38,30,92,0) 40%,rgba(38,30,92,.16) 68%,rgba(74,36,84,.26) 88%,rgba(96,48,72,.30) 100%)}
+/* sky v1 (16 Nov): faint still stars behind the top of the page, drawn once; dawn light at the bottom. Night -> dawn = the time you win back. Nothing animates. */
+#sky{position:absolute;top:0;left:0;width:100%;height:1500px;z-index:-1;pointer-events:none;-webkit-mask-image:linear-gradient(#000 0,#000 45%,transparent 100%);mask-image:linear-gradient(#000 0,#000 45%,transparent 100%)}
+.final::before{content:"";position:absolute;left:-20%;right:-20%;bottom:0;height:78%;pointer-events:none;background:radial-gradient(ellipse 60% 100% at 50% 100%,rgba(255,197,138,.30),rgba(232,130,170,.16) 34%,rgba(124,108,255,.09) 62%,rgba(124,108,255,0) 80%)}
+.final .wrap{position:relative}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:999px;border:0;background:#fff;color:#0A0B14;font:600 16px/1 var(--sans);letter-spacing:-.005em;text-decoration:none;cursor:pointer;white-space:nowrap;transition:transform .15s ease,background .15s ease}
+.btn:hover{background:#E9E7F5}
+.btn:active{transform:scale(.98)}
+.btn-sm{min-height:44px;padding:0 18px;font-size:15px}
+
+/* nav */
+.nav{position:absolute;top:0;left:0;right:0;z-index:5}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.mark{font:500 28px/1 "Outfit",var(--sans);letter-spacing:-.02em;text-decoration:none;color:#fff;min-height:44px;display:inline-flex;align-items:center}
+.nav-links{display:none;gap:30px;font-size:15px}
+.nav-links a{color:var(--muted);text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.nav-links a:hover{color:#fff}
+
+/* hero */
+.hero{position:relative;padding:68px 0 40px;text-align:center}
+.hero .wrap{position:relative}
+.orb-stage{position:relative;width:min(290px,72vw);aspect-ratio:1;margin:0 auto 40px}
+.orb-stage::before{content:"";position:absolute;inset:-46%;background:radial-gradient(closest-side,rgb(var(--glow) / .30),rgb(var(--glow) / .10) 45%,rgb(var(--glow) / 0) 72%);pointer-events:none;transition:background 2.4s ease-in-out}
+@property --g1{syntax:'<color>';inherits:true;initial-value:#7FB0F5}
+@property --g2{syntax:'<color>';inherits:true;initial-value:#BCA6FF}
+.hero{--g1:#7FB0F5;--g2:#BCA6FF;--glow:124 108 255}
+.hero h1 .grad{transition:--g1 2.4s ease-in-out,--g2 2.4s ease-in-out} /* lag fix: animate the headline only, not the whole hero's style */
+.hero h1 .grad{display:inline-block;background-image:linear-gradient(90deg,#fff 0%,#fff 22%,var(--g1) 62%,var(--g2) 100%)}
+.hero h1 span.grad{display:inline-block;white-space:normal}
+/* hero orb: live engines (assets/orbs-live/hero.js). Wrappers animate transform + opacity only; engines render transparent. */
+.lv{position:absolute;inset:0;pointer-events:none;will-change:transform,opacity;transform-origin:50% 50%}
+.lv-in{position:absolute;left:0;top:0;width:560px;height:560px;transform-origin:0 0}
+#orbcycle .lv canvas{display:block}
+#orbcycle .lv img{animation:none}
+#orbcycle{animation:none;will-change:auto}
+.hero .orb-stage.rise{animation-name:fadein;transform:none}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.orb-name{position:absolute;left:0;right:0;bottom:-22px;margin:0;text-align:center;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:opacity .5s ease}
+.orb-name.fade{opacity:0}
+.orb{position:relative;display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:default;isolation:auto;touch-action:pan-y;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;animation:breathe 9s ease-in-out infinite;will-change:transform}
+.orb:active{cursor:grabbing}
+.orb canvas{position:absolute;inset:-12%;width:124%;height:124%;display:none;pointer-events:none}
+.orb #orbfx{mix-blend-mode:screen}
+.orb.live{animation:none}
+.orb.live canvas{display:block}
+.orb.live img{visibility:hidden;animation:none}
+.orb-hint{position:absolute;left:0;right:0;bottom:-16px;margin:0;text-align:center;font-size:12.5px;letter-spacing:.04em;color:var(--muted);opacity:.85;pointer-events:none;transition:opacity .6s ease}
+.orb-hint.gone{opacity:0}
+.orb img{width:100%;height:100%;animation:drift 70s linear infinite}
+@keyframes breathe{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.035) translateY(-6px)}}
+@keyframes drift{to{transform:rotate(360deg)}}
+.kicker{font-size:15px;color:var(--muted);margin-bottom:12px;position:relative}
+.hero h1{position:relative;font-size:clamp(44px,12.4vw,50px)}
+.hero h1 span{display:block}
+.hero .sub{position:relative;margin:18px auto 0;max-width:22.5em;font-size:17.5px;color:#D4D4E2}
+.hero .signup{margin:26px auto 0;max-width:440px}
+
+/* waitlist form */
+.signup{position:relative;text-align:left}
+.signup form{display:grid;gap:10px}
+.signup input{width:100%;min-height:54px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.055);color:#fff;font:400 17px/1.2 var(--sans)}
+.signup input::placeholder{color:#8F91A6}
+.signup input:focus{outline:none;border-color:var(--violet);background:rgba(255,255,255,.08)}
+.signup input[aria-invalid="true"]{border-color:#FF9C9C}
+.signup .btn{width:100%;min-height:54px}
+.signup .err{color:#FFB3B3;font-size:14.5px;padding:0 6px;min-height:0}
+.signup .err:empty{display:none}
+.signup .fine{margin-top:12px;font-size:13.5px;line-height:1.5;color:var(--muted);text-align:center}
+.signup .done{display:none;align-items:center;gap:14px;padding:16px 20px;border-radius:22px;border:1px solid rgba(143,227,180,.38);background:rgba(143,227,180,.07);font-size:17px;font-weight:500;line-height:1.35}
+.signup .done svg{flex:none;color:var(--good)}
+.signup.is-done form{display:none}
+.signup.is-done .done{display:flex}
+
+.assure{position:relative;list-style:none;padding:0;margin:22px auto 0;display:grid;gap:8px;max-width:440px;font-size:14.5px;color:#C9CADB;text-align:left}
+.assure li{display:flex;gap:10px;align-items:flex-start}
+.assure svg{flex:none;margin-top:3px;color:var(--violet)}
+
+/* sections (design v2, 16 Nov): fewer boxes, one accent per section, night -> dawn */
+.sec{position:relative;padding:72px 0}
+.sec-head{max-width:700px}
+.sec::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse 65% 30% at var(--gx,20%) 34%,rgb(var(--acc-rgb,124 108 255) / .11),rgb(var(--acc-rgb,124 108 255) / 0) 70%)}
+.how{--gx:80%}
+.note-sec{--gx:50%}
+.pricing{--gx:70%}
+.questions{--gx:30%}
+.note-sec::before,.questions::before{opacity:.6}
+h2 .acc,.acc{color:var(--acc)}
+
+/* facts strip: type + space only */
+.strip ul{list-style:none;margin:0;padding:8px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:26px 22px}
+.strip li{font-size:14px;line-height:1.45;color:var(--muted)}
+.strip li::before{content:"";display:block;width:18px;height:2px;border-radius:2px;background:rgba(255,255,255,.28);margin-bottom:12px}
+.strip b{display:block;color:#fff;font-weight:500;font-size:16px;margin-bottom:4px;letter-spacing:-.01em}
+@media (min-width:900px){.strip ul{grid-template-columns:repeat(4,1fr);gap:0 40px}}
+
+/* hours: the number is the picture */
+.hours-head{display:grid;gap:26px}
+.cites{display:grid;gap:20px}
+.cite{font-size:16.5px;color:#D4D4E2;max-width:30em}
+.cite cite{display:block;font-style:normal;font-size:13px;color:#8F91A6;margin-top:6px}
+.calc{position:relative;margin-top:40px;border:1px solid rgba(127,176,245,.20);border-radius:30px;padding:26px 22px 26px;overflow:hidden;background:radial-gradient(ellipse 70% 70% at 22% 46%,rgba(79,143,232,.22),rgba(79,143,232,.06) 50%,rgba(79,143,232,0) 78%),#080B18}
+.calc-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.calc label{font-size:16px;color:#D4D4E2}
+.calc output{font-weight:500;font-size:22px;color:#fff;font-variant-numeric:tabular-nums}
+.days{display:flex;flex-direction:column;margin-top:8px}
+.days b{display:block;font-weight:500;font-size:clamp(96px,30vw,240px);line-height:.92;letter-spacing:-.055em;font-variant-numeric:tabular-nums;background:linear-gradient(100deg,#fff 0%,#D6E5FF 18%,#7FB0F5 52%,#BCA6FF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.04em}
+.days span{font-size:19px;color:#D4D4E2;line-height:1.3;max-width:12em}
+.calc input[type=range]{--p:33%;-webkit-appearance:none;appearance:none;width:100%;height:44px;background:transparent;margin:18px 0 0;cursor:pointer}
+.calc input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,#7FB0F5,#BCA6FF) 0 0 / var(--p) 100% no-repeat,rgba(255,255,255,.14)}
+.calc input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:rgba(255,255,255,.14)}
+.calc input[type=range]::-moz-range-progress{height:6px;border-radius:6px;background:linear-gradient(90deg,#7FB0F5,#BCA6FF)}
+.calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;margin-top:-12px;border:0;box-shadow:0 0 0 7px rgba(127,176,245,.18),0 0 24px rgba(127,176,245,.45)}
+.calc input[type=range]::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:0}
+.calc .ends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.years{margin-top:22px;display:flex;align-items:baseline;gap:12px}
+.years b{font-weight:500;font-size:44px;line-height:1;letter-spacing:-.03em;color:#fff;font-variant-numeric:tabular-nums}
+.years span{font-size:16px;color:var(--muted)}
+.calc-foot{margin-top:14px;font-size:12.5px;color:#8F91A6;line-height:1.5}
+.mid-cta{margin-top:44px}
+.mid-cta h3{font-family:var(--sans);font-weight:500;font-size:32px;line-height:1.1;letter-spacing:-.03em;margin-bottom:18px}
+.mid-cta .signup{max-width:440px}
+.mid-cta .signup .fine{text-align:left}
+
+/* how it works: 1 and 3 small, 2 is the scene */
+.steps{list-style:none;padding:0;margin:48px 0 0;display:grid;gap:64px}
+.step-n{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid rgba(166,139,255,.45);background:rgba(124,108,255,.10);font-size:14px;font-weight:500;color:#D9CEFF;margin-bottom:14px}
+.step h3{font-family:var(--sans);font-weight:500;font-size:29px;letter-spacing:-.03em;line-height:1.12}
+.step p{color:var(--muted);margin-top:10px;max-width:30em}
+.step ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:14px;font-size:15.5px}
+.step li{display:grid;gap:2px}
+.step li b{font-weight:500;color:#fff}
+.step li span{color:var(--muted)}
+.shot{position:relative;margin:28px auto 0;width:min(300px,78vw);overflow:hidden}
+.shot img{width:100%;border-radius:13.4% / 6.2%}
+.shot.crop-low{aspect-ratio:780/1060;-webkit-mask-image:linear-gradient(#000 74%,transparent);mask-image:linear-gradient(#000 74%,transparent)}
+.shot.crop-low img{position:absolute;top:0;left:0}
+.shot.crop-high{aspect-ratio:780/1080;-webkit-mask-image:linear-gradient(transparent,#000 22%);mask-image:linear-gradient(transparent,#000 22%)}
+.shot.crop-high img{position:absolute;bottom:0;left:0}
+.shot .cover{position:absolute;left:18%;right:18%;top:7.6%;height:4%;background:#0E0A19}
+.scene{position:relative;margin:30px auto 0;width:min(320px,82vw)}
+.scene::before{content:"";position:absolute;left:50%;top:50%;width:250%;aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(closest-side,rgba(150,120,255,.42),rgba(124,108,255,.18) 38%,rgba(90,70,220,.06) 62%,rgba(90,70,220,0) 80%)}
+.scene .shot{width:100%;margin:0;overflow:visible}
+.scene .shot img{box-shadow:0 30px 80px -20px rgba(0,0,0,.7)}
+.callout{position:relative;margin:22px auto 0;max-width:320px;padding:14px 18px;border-radius:18px;border:1px solid rgba(166,139,255,.40);background:rgba(20,16,44,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.callout small{display:block;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:#BBA9FF}
+.callout q{display:block;font-size:22px;font-weight:500;letter-spacing:-.02em;color:#fff;margin-top:4px;quotes:"\201C" "\201D"}
+
+/* will it stop me: a scale, not a table */
+.hold{margin-top:96px}
+.hold h3{font-family:var(--sans);font-weight:500;font-size:clamp(31px,4.4vw,48px);line-height:1.04;letter-spacing:-.04em}
+.hold-intro p{color:var(--muted);margin-top:14px;max-width:36em}
+.scale{margin-top:36px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lvl{display:flex;flex-direction:column}
+@supports (grid-template-rows:subgrid){.scale{grid-template-rows:repeat(4,auto)}.lvl{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:0;align-content:start}.lvl .wait{align-self:start}}
+.lvl.l3 strong{white-space:nowrap}
+.lvl .bar{display:block;height:var(--h);border-radius:999px;background:var(--c);margin-bottom:18px;box-shadow:0 0 var(--gl) rgb(124 108 255 / .5)}
+.lvl.l1{--c:#D9CEFF;--h:4px;--gl:0px}
+.lvl.l2{--c:#A68BFF;--h:8px;--gl:14px}
+.lvl.l3{--c:#7A55FF;--h:14px;--gl:26px}
+.lvl strong{font-weight:600;font-size:17px}
+.lvl em{font-style:normal;color:var(--muted);font-size:14.5px}
+.lvl .wait{margin-top:14px;font-weight:500;font-size:clamp(21px,5.6vw,34px);line-height:1.05;letter-spacing:-.03em;color:var(--c);font-variant-numeric:tabular-nums}
+.lvl .wait small{display:block;margin-top:6px;color:var(--muted);font-size:13px;font-weight:400;letter-spacing:0}
+.tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;border:1px solid rgba(166,139,255,.5);color:#CDBEFF;font-size:12px;font-weight:500;vertical-align:2px}
+.hold-notes{list-style:none;margin:40px 0 0;padding:0;display:grid;gap:10px;font-size:15px;color:#C9CADB;max-width:44em}
+.hold-notes li{display:flex;gap:12px}
+.hold-notes li::before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:#A68BFF;margin-top:.62em}
+
+/* note: type only */
+.note{max-width:680px;margin:0 auto}
+.note p{color:#D4D4E2;font-size:19px;line-height:1.6}
+.note p:nth-child(2){font-size:clamp(24px,3.2vw,32px);line-height:1.25;letter-spacing:-.025em;color:#fff;font-weight:500}
+.note p+p{margin-top:16px}
+.note .sig{color:var(--muted);font-size:15px;margin-top:24px}
+.note .note-k{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:14px}
+
+/* privacy: type only */
+.privacy{display:grid;gap:34px}
+.privacy h2{font-size:clamp(34px,5vw,54px)}
+.privacy ul{list-style:none;margin:0;padding:0;display:grid;gap:24px}
+.privacy li{color:var(--muted);padding-left:22px;position:relative}
+.privacy li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 12px rgb(var(--acc-rgb) / .8)}
+.privacy li b{display:block;color:#fff;font-weight:500;font-size:1.06em}
+
+/* pricing: the offer keeps its cards */
+.plans{display:grid;gap:16px;margin-top:40px}
+.plan{position:relative;border:1px solid var(--line);border-radius:28px;padding:28px 22px;background:#0A0B16}
+.plan.plus{border-color:rgba(242,167,198,.45);background:radial-gradient(ellipse 90% 60% at 80% 0%,rgba(232,130,170,.20),rgba(232,130,170,.04) 60%,rgba(232,130,170,0) 85%),#0D0A16;box-shadow:0 30px 90px -40px rgba(232,130,170,.45)}
+.plan h3{font-size:16px;font-weight:500;color:var(--muted)}
+.plan.plus h3{color:#F6C4D9}
+.plan .price{font-family:var(--sans);font-weight:500;font-size:56px;line-height:1.02;letter-spacing:-.035em;margin-top:8px}
+.plan .price small{font-family:var(--sans);font-size:15px;color:var(--muted);letter-spacing:0;margin-left:6px}
+.plan .note{font-size:15px;color:var(--muted);margin-top:8px}
+.plan ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px;font-size:15.5px;color:#D4D4E2}
+.plan ul li{display:flex;gap:10px}
+.plan ul svg{flex:none;margin-top:5px;color:#A9ABBF}
+.plan.plus ul svg{color:var(--acc)}
+.others{margin-top:22px;padding-top:6px;border-top:1px solid var(--line-soft);font-size:15px}
+.others div{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.others div:last-child{border-bottom:0;padding-bottom:0}
+.others span{color:var(--muted)}
+.price-foot{margin-top:22px;font-size:15px;color:var(--muted);max-width:44em}
+
+/* faq */
+.faq{margin-top:28px;border-bottom:1px solid var(--line-soft)}
+.faq details{border-top:1px solid var(--line-soft)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:60px;padding:14px 0;font-weight:500;font-size:17px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:11px;height:11px;border-right:1.5px solid var(--acc);border-bottom:1.5px solid var(--acc);transform:rotate(45deg);transition:transform .2s ease;margin-right:4px}
+.faq details[open] summary::after{transform:rotate(-135deg)}
+.faq details p{color:var(--muted);padding:0 0 20px;max-width:40em}
+
+/* reveal on scroll: once, opacity + 12 px; off for reduced motion */
+.js .rv{opacity:0;transform:translateY(12px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .rv.in{opacity:1;transform:none}
+
+/* final */
+.final{position:relative;text-align:center;padding:88px 0 96px;overflow:hidden}
+.final-orb{position:relative;width:200px;aspect-ratio:1;margin:0 auto -18px}
+.final-orb::before{content:"";position:absolute;inset:-50%;background:radial-gradient(closest-side,rgba(124,108,255,.24),rgba(124,108,255,.07) 48%,rgba(124,108,255,0) 72%)}
+.final-orb img{position:relative;animation:breathe 10s ease-in-out infinite}
+.final h2{position:relative}
+.final .lede{margin-left:auto;margin-right:auto;position:relative}
+.final .signup{margin:28px auto 0;max-width:440px}
+.makers{margin:44px auto 0;max-width:30em;font-size:15.5px;color:var(--muted)}
+.makers a{color:#fff;text-underline-offset:3px;display:inline-block;padding:10px 0}
+
+footer{border-top:1px solid var(--line-soft);padding:26px 0 112px;font-size:14px;color:#8F91A6}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center}
+footer .mark{font-size:22px}
+.mark .emb{width:.92em;height:.92em;margin-right:.34em;flex:none}
+footer a{color:var(--muted);min-height:44px;display:inline-flex;align-items:center}
+
+/* sticky mobile CTA */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(5,6,13,.94);border-top:1px solid var(--line);display:flex;align-items:center;gap:14px;transform:translateY(110%);transition:transform .28s ease}
+.sticky.on{transform:none}
+.sticky p{flex:1;font-size:13.5px;line-height:1.3;color:var(--muted)}
+.sticky p b{display:block;color:#fff;font-weight:500;font-size:14.5px}
+
+/* load sequence */
+.rise{opacity:0;transform:translateY(14px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+.rise.d1{animation-delay:.12s}.rise.d2{animation-delay:.24s}.rise.d3{animation-delay:.36s}
+.orb-stage.rise{transform:scale(.94);animation-name:bloom;animation-duration:1.4s}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes bloom{to{opacity:1;transform:none}}
+
+@media (min-width:600px){
+  .signup form{grid-template-columns:1fr auto}
+  .signup .btn{width:auto}
+  .signup .err{grid-column:1 / -1}
+  .plan{padding:34px}
+}
+@media (min-width:900px){
+  :root{--pad:40px}
+  body{font-size:18px}
+  .nav .wrap{height:84px}
+  .nav-links{display:flex}
+  .hero{text-align:left;padding:128px 0 84px}
+  .hero .wrap{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);align-items:center;gap:24px}
+  .hero-copy{grid-column:1;grid-row:1}
+  .orb-stage{grid-column:2;grid-row:1;width:min(460px,100%);margin:0 40px 0 auto}
+  .hero h1{font-size:clamp(56px,5.4vw,78px)}
+  .hero h1 span{white-space:nowrap}
+  .hero .sub{margin-left:0;font-size:20px;max-width:23em}
+  .hero .signup{margin-left:0;max-width:480px}
+  .signup .fine{text-align:left}
+  .assure{margin-left:0;max-width:none;display:flex;flex-wrap:wrap;gap:8px 26px}
+  .sec{padding:120px 0}
+  .strip{padding:28px 0 8px}
+  .hours-head{grid-template-columns:1.1fr .9fr;gap:72px;align-items:end}
+  .calc{margin-top:56px;padding:44px 52px 40px;display:grid;grid-template-columns:1fr auto;gap:0 48px}
+  .calc-top{grid-column:1 / -1;justify-content:flex-start;gap:16px}
+  .days{grid-column:1;flex-direction:row;align-items:flex-end;gap:28px}
+  .days span{font-size:24px;padding-bottom:28px}
+  .calc .range-wrap{grid-column:1 / -1}
+  .years{grid-column:2;grid-row:2;flex-direction:column;align-items:flex-end;gap:8px;align-self:end;padding-bottom:30px;margin:0;text-align:right}
+  .years b{font-size:64px}
+  .calc-foot{grid-column:1 / -1}
+  .mid-cta{display:flex;align-items:center;justify-content:space-between;gap:40px;margin-top:48px}
+  .mid-cta h3{margin:0}
+  .mid-cta .signup{flex:0 1 520px;max-width:520px}
+  .steps{gap:120px;margin-top:72px}
+  .step-sm{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
+  .step-sm .shot{margin:0 auto;width:340px}
+  .s1 .step-copy{order:2}
+  .step-hero{display:grid;grid-template-columns:380px 1fr;gap:40px;align-items:center}
+  .step-hero h3{font-size:44px;line-height:1.06}
+  .step-hero p{font-size:19px}
+  .scene{width:420px;margin:0 0 0 auto}
+  .callout{position:absolute;right:calc(100% - 36px);top:52%;margin:0;width:250px;max-width:none}
+  .callout::after{content:"";position:absolute;left:100%;top:50%;width:70px;height:1px;background:linear-gradient(90deg,rgba(166,139,255,.6),rgba(166,139,255,0))}
+  .hold{margin-top:160px;display:grid;grid-template-columns:.8fr 1.2fr;gap:40px 72px}
+  .hold-intro{grid-row:1 / span 2}
+  .scale{margin-top:6px;gap:20px}
+  .hold-notes{margin-top:8px}
+  .privacy{grid-template-columns:1fr 1fr;gap:72px;align-items:start}
+  .plans{grid-template-columns:1fr 1.25fr;gap:20px;align-items:start}
+  .faq-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:72px}
+  .faq{margin-top:0}
+  .final{padding:60px 0 120px}
+  .final-orb{width:260px}
+  .final .signup .fine{text-align:center}
+  footer{padding-bottom:30px}
+  .sticky{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rise{opacity:1;transform:none}
+  .js .rv{opacity:1;transform:none}
+}
+
+/* type scale v1 (16 Nov, Henry: "font sizes all over the place"): 8 sizes only, everything maps to one */
+:root{--t-cap:13px;--t-sm:15px;--t-body:17px;--t-lead:19px;--t-h3:26px;--t-stat:40px;--t-h2:36px;--t-big:32px}
+@media (min-width:900px){:root{--t-body:18px;--t-lead:21px;--t-h3:30px;--t-stat:56px;--t-h2:52px;--t-big:44px}}
+h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
+.lede,.hero .sub,.days span,.note p:nth-child(n+3),.step-hero p{font-size:var(--t-lead)}
+.cite,.step p,.privacy li,.faq summary,.note p,.plan ul,.lvl strong,.calc label,.calc output{font-size:var(--t-body)}
+.strip li span,.step li span,.lvl em,.hold-notes,.years span,.plan h3,.plan .note,.others,.price-foot,.faq details p,.note .sig,.kicker{font-size:var(--t-sm)}
+.cite cite,.calc .ends,.calc-foot,.lvl .wait small,.note .note-k,.callout small,.signup .fine,.tag{font-size:var(--t-cap)}
+.step h3{font-size:var(--t-h3);line-height:1.15}
+.step-hero h3{font-size:var(--t-big);line-height:1.08}
+.note p:nth-child(2),.callout q{font-size:var(--t-h3)}
+.years b,.plan .price,.lvl .wait{font-size:var(--t-stat)}
+.step li b,.privacy li b{font-size:var(--t-body)}
+@media (max-width:899px){.lvl .wait{font-size:22px}}
+/* hours a day: label and value on one line, same size, value in the section accent */
+.calc-top{justify-content:flex-start;gap:10px}
+.calc label{font-size:var(--t-lead);color:#D4D4E2}
+.calc output{font-size:var(--t-lead);font-weight:600;color:var(--acc)}
+.calc-top{align-items:baseline}
+@media (min-width:900px){.hours{padding-bottom:40px}}
+.days{margin-top:14px}
+/* strip: icon + title carry it */
+.strip{padding-top:12px}
+.strip ul{gap:30px 22px}
+.strip li::before{display:none}
+.strip .ico{display:block;width:28px;height:28px;color:#BCA6FF;margin-bottom:14px;filter:drop-shadow(0 0 10px rgba(166,139,255,.55))}
+.strip b{font-size:var(--t-lead);line-height:1.25;margin-bottom:6px;letter-spacing:-.02em}
+.strip li{color:var(--muted)}
+
+/* hours v3: static data story (Henry 13:09: no slider, more eye-opening facts + graphs) */
+.hours figure{margin-left:0;margin-right:0;margin-bottom:0}
+.hours cite{display:block;font-style:normal;font-size:var(--t-cap);color:#8F91A6;margin-top:10px}
+.big-num{display:flex;align-items:baseline;gap:14px;margin:0}
+.big-num b{font-weight:500;font-size:clamp(72px,20vw,120px);line-height:.9;letter-spacing:-.055em;background:linear-gradient(100deg,#fff 0%,#D6E5FF 22%,#7FB0F5 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.big-num span,.mid-num span{font-size:var(--t-h3);font-weight:500;color:#D6E5FF;letter-spacing:-.02em}
+.mid-num{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+.mid-num b{font-weight:500;font-size:var(--t-stat);line-height:1;letter-spacing:-.035em;color:#fff}
+.hours .year{margin-top:40px}
+.year-line{font-size:var(--t-lead);color:#D4D4E2;max-width:24em;margin-top:12px}
+.cal{margin-top:22px;display:grid;grid-template-rows:repeat(14,1fr);grid-auto-flow:column;grid-auto-columns:1fr;gap:3px}
+.cal i{aspect-ratio:1;border-radius:1.5px;background:rgba(255,255,255,.08)}
+.cal i.on{background:#7FB0F5;box-shadow:0 0 8px rgba(127,176,245,.55)}
+.cal-k{display:flex;justify-content:space-between;margin-top:10px;font-size:var(--t-cap);color:#8F91A6}
+.cal-k .nd{color:#7FB0F5}
+.hours .pick{margin-top:56px}
+.pick-copy p{font-size:var(--t-body);color:#D4D4E2}
+.pick .mid-num b{font-size:var(--t-stat)}
+.ticks{position:relative;height:44px;margin-top:22px;border-bottom:1px solid rgba(255,255,255,.14)}
+.ticks i{position:absolute;bottom:0;width:1.5px;height:100%;background:linear-gradient(#7FB0F500,#7FB0F5);border-radius:1px;opacity:.85}
+.tick-k{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--t-cap);color:#8F91A6}
+.trio{margin-top:96px;display:grid;gap:56px}
+.trio figure>p:not(.mid-num){font-size:var(--t-body);color:#D4D4E2;max-width:22em}
+.bars{margin-top:20px;display:grid;gap:9px}
+.bars div{display:grid;grid-template-columns:4.6em 1fr auto;align-items:center;gap:10px;font-size:var(--t-sm);color:var(--muted)}
+.bars i{display:block;height:10px;width:var(--w);border-radius:6px;background:rgba(255,255,255,.16)}
+.bars b{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.bars .me span,.bars .me b{color:#fff}
+.bars .me i{background:linear-gradient(90deg,#4F8FE8,#7FB0F5);box-shadow:0 0 14px rgba(127,176,245,.5)}
+.dots{margin-top:20px;display:grid;grid-template-columns:repeat(10,1fr);gap:6px;max-width:230px}
+.dots i{aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.12)}
+.dots i.on{background:#7FB0F5;box-shadow:0 0 6px rgba(127,176,245,.6)}
+.lifebar{margin-top:20px;display:grid;grid-template-columns:repeat(10,1fr);gap:5px;max-width:260px}
+.lifebar i{height:20px;border-radius:3px;background:rgba(255,255,255,.10)}
+.lifebar i.on{background:#7FB0F5}
+.lifebar i.half{background:linear-gradient(90deg,#7FB0F5 50%,rgba(255,255,255,.10) 50%)}
+.hours .back{margin-top:56px;padding-top:36px;border-top:1px solid rgba(143,227,180,.25);display:grid;gap:12px}
+.back .mid-num b{color:var(--good)}
+.back p{font-size:var(--t-lead);color:#D4D4E2;max-width:34em}
+@media (min-width:900px){
+  .hours .year{margin-top:40px;display:grid;grid-template-columns:auto 1fr;gap:0 56px;align-items:end}
+  .year-copy{grid-column:1 / -1;display:grid;grid-template-columns:auto 1fr;gap:0 40px;align-items:end}
+  .year-copy .big-num{grid-row:1 / span 2}
+  .year-line{margin:0 0 4px}
+  .year-copy cite{grid-column:2}
+  .cal{grid-column:1 / -1;grid-template-rows:repeat(7,1fr);margin-top:28px;gap:2px}
+  .cal-k{grid-column:1 / -1}
+  .pick{display:grid;grid-template-columns:260px 1fr;gap:12px 56px;align-items:end}
+  .pick-copy{grid-row:1 / span 2}
+  .ticks{height:56px;margin:0}
+  .tick-k{grid-column:2;margin:0}
+  .trio{grid-template-columns:1.25fr 1fr 1fr;gap:64px}
+  .back{grid-template-columns:auto 1fr;gap:48px;align-items:center}
+}
+
+/* hours v4: simplest form */
+.yr{margin-top:36px;height:10px;border-radius:6px;background:rgba(255,255,255,.10);position:relative;overflow:hidden}
+.yr i{position:absolute;right:0;top:0;bottom:0;width:16.7%;background:#7FB0F5;box-shadow:0 0 16px rgba(127,176,245,.7)}
+.yr-k{display:flex;justify-content:space-between;margin-top:8px;font-size:var(--t-cap);color:#8F91A6}
+.yr-k .nd{color:#7FB0F5}
+.three{margin-top:40px;display:grid;gap:32px}
+.three b{display:block;font-weight:500;font-size:var(--t-stat);line-height:1;letter-spacing:-.035em;color:#fff}
+.three b.g{color:#7FB0F5}
+.three b.ok{color:var(--good)}
+.three p{margin-top:10px;font-size:var(--t-body);color:#D4D4E2;max-width:20em}
+.three cite{display:block;font-style:normal;font-size:var(--t-cap);color:#8F91A6;margin-top:8px}
+@media (min-width:900px){.three{grid-template-columns:repeat(3,1fr);gap:48px}}
+
+/* hours v5: one panel */
+.day{display:grid;gap:28px}
+.day-line{margin-top:14px;font-size:var(--t-lead);color:#D4D4E2}
+.day-key{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:var(--t-cap);color:var(--muted)}
+.day-key li::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:rgba(255,255,255,.22)}
+.day-key .k-ph{color:#fff}.day-key .k-ph::before{background:#7FB0F5;box-shadow:0 0 8px rgba(127,176,245,.8)}
+.day-key .k-sl::before{background:rgba(255,255,255,.09)}
+.hours .ring{position:relative;width:200px;margin:0 auto}
+.ring svg{display:block;width:100%;height:auto;overflow:visible}
+.ring .ph{filter:drop-shadow(0 0 8px rgba(127,176,245,.75))}
+.ring figcaption{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.ring figcaption b{font-weight:500;font-size:var(--t-stat);line-height:1;letter-spacing:-.035em;color:#fff}
+.ring figcaption span{margin-top:6px;font-size:var(--t-cap);color:var(--muted);max-width:9em}
+.facts3{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line-soft);padding-top:20px}
+.facts3 div{padding:0 12px}
+.facts3 div:first-child{padding-left:0}
+.facts3 div+div{border-left:1px solid var(--line-soft)}
+.facts3 b{display:block;font-weight:500;font-size:var(--t-h3);line-height:1;letter-spacing:-.03em;color:#fff}
+.facts3 b.g{color:#7FB0F5}.facts3 b.ok{color:var(--good)}
+.facts3 p{margin-top:8px;font-size:var(--t-cap);line-height:1.4;color:var(--muted)}
+.day-src{font-size:12px;color:#8F91A6;margin-top:-8px}
+@media (max-width:899px){.hours{padding:56px 0 40px}}
+@media (min-width:900px){
+  .hours{padding:96px 0 56px}
+  .day{grid-template-columns:1fr 280px;gap:40px 72px;align-items:center}
+  .hours .ring{width:260px;margin:0}
+  .facts3{grid-column:1 / -1;padding-top:28px}
+  .facts3 div{padding:0 32px}
+  .facts3 p{font-size:var(--t-sm);max-width:16em}
+  .day-src{grid-column:1 / -1;margin-top:-20px}
+}
+
+/* hours v5.1: mid widths (640-899, e.g. a laptop at 150 % zoom) go side by side so the ring fills the empty right half */
+@media (min-width:640px) and (max-width:899px){
+  .day{grid-template-columns:1fr 240px;gap:32px 40px;align-items:center}
+  .hours .ring{width:240px;margin:0}
+  .facts3{grid-column:1 / -1}
+  .facts3 div{padding:0 20px}
+  .facts3 p{font-size:var(--t-sm)}
+  .day-src{grid-column:1 / -1}
+}
+
+/* hours v6: stat cards (pattern from Sana / GitHub / Function stat sections: equal cards, context on top, small visual, number at the bottom) */
+.hours-top{max-width:760px}
+.scs{margin-top:32px;display:grid;gap:12px}
+.hours .sc{position:relative;margin:0;padding:20px 20px 22px;border-radius:24px;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:radial-gradient(ellipse 90% 70% at 100% 0%,rgb(var(--c) / .16),rgb(var(--c) / 0) 70%),linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015))}
+.hours .sc-w{--c:188 166 255}.hours .sc-g{--c:143 227 180}
+.sc-k{font-size:var(--t-cap);letter-spacing:.08em;text-transform:uppercase;color:rgb(var(--c))}
+.sc-v{height:40px;margin:16px 0 18px;position:relative}
+.sc b{display:block;font-weight:500;font-size:var(--t-stat);line-height:1;letter-spacing:-.035em;color:#fff}
+.sc-g b{color:var(--good)}
+.sc p:not(.sc-k){margin-top:10px;font-size:var(--t-body);color:#D4D4E2;max-width:18em}
+.hours .sc cite{margin-top:12px;font-size:12px}
+.months{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end}
+.months i{height:100%;border-radius:4px;background:rgba(255,255,255,.15)}
+.months i.on{background:#7FB0F5;box-shadow:0 0 12px rgba(127,176,245,.6)}
+.tk{border-bottom:1px solid rgba(255,255,255,.12)}
+.tk i{position:absolute;bottom:0;width:1.5px;height:100%;border-radius:1px;background:linear-gradient(rgba(188,166,255,0),#BCA6FF);opacity:.8}
+.d14{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;align-items:center}
+.tk .tk-l{position:absolute;top:calc(100% + 7px);font-size:11px;font-style:normal;letter-spacing:.04em;white-space:nowrap;color:rgba(212,212,226,.62)}
+.scs-foot{margin:22px auto 0;max-width:40em;text-align:center;font-size:var(--t-body);color:#D4D4E2}
+.scs-foot b{color:#fff;font-weight:500}
+.bns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center}
+.bn{display:flex;flex-direction:column;align-items:flex-start;gap:8px;color:var(--good)}
+.bn-i{display:block}
+.bn-t{display:flex;align-items:center;gap:4px;font-size:13px;color:#D4D4E2}
+.bn-up{color:var(--good)}
+@media (max-width:639px){.sc-v.bns{height:auto;margin-bottom:22px}.sc-v.tk{margin-bottom:34px}}
+.d14 i{aspect-ratio:1;max-height:100%;border-radius:50%;background:#8FE3B4;justify-self:center;width:100%;max-width:18px}
+@media (min-width:640px){
+  .scs{grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+  .hours .sc{padding:26px 26px 28px;display:flex;flex-direction:column}
+  .sc-v{height:56px;margin:22px 0 auto;margin-bottom:36px}
+}
+@media (min-width:900px){.hours .sc{padding:30px 30px 32px}.sc-v{height:64px;margin-bottom:48px}}
+
+/* accent v1 (16 Nov 14:41): the page accent = the orb showing in the hero (hero.js theme() sets --acc / --acc-rgb on :root).
+   The variable itself is not animated (that would restyle the whole page each frame); each accent element transitions its own colour. */
+:root{--acc:#BCA6FF;--acc-rgb:124 108 255;--ember:#ff5a36}
+.strip .ico,.fam .ico,.sc-k,.months i,.tk i,.step-n,.callout,.callout small,.tag,.hold-notes li::before,.privacy li::before,.note .note-k,.plan.plus,.plan.plus h3,.plan.plus ul svg,.sec::before,.hours .sc::before,.scene::before,.plan.plus::before{transition:color 2.4s ease-in-out,background-color 2.4s ease-in-out,border-color 2.4s ease-in-out,box-shadow 2.4s ease-in-out,filter 2.4s ease-in-out}
+.faq summary::after{transition:transform .2s ease,border-color 2.4s ease-in-out}
+.sec::before{background:none;background-color:rgb(var(--acc-rgb) / .11);-webkit-mask-image:radial-gradient(ellipse 65% 30% at var(--gx,20%) 34%,#000,transparent 70%);mask-image:radial-gradient(ellipse 65% 30% at var(--gx,20%) 34%,#000,transparent 70%)}
+.strip .ico,.fam .ico{color:var(--acc);filter:drop-shadow(0 0 10px rgb(var(--acc-rgb) / .55))}
+.hours .sc{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015))}
+.hours .sc>*{position:relative}
+.hours .sc::before{content:"";position:absolute;inset:0;pointer-events:none;background-color:rgb(var(--acc-rgb) / .20);-webkit-mask-image:radial-gradient(ellipse 90% 70% at 100% 0%,#000,transparent 70%);mask-image:radial-gradient(ellipse 90% 70% at 100% 0%,#000,transparent 70%)}
+.hours .sc-g::before{background-color:rgb(143 227 180 / .16)}
+.sc-k{color:var(--acc)}.sc-g .sc-k{color:var(--good)}
+.months i.on{background:var(--acc);box-shadow:0 0 12px rgb(var(--acc-rgb) / .6)}
+.tk i{background:var(--acc);-webkit-mask-image:linear-gradient(transparent,#000);mask-image:linear-gradient(transparent,#000)}
+.step-n{border-color:rgb(var(--acc-rgb) / .5);background:rgb(var(--acc-rgb) / .12);color:var(--acc)}
+.scene::before{background:none;background-color:rgb(var(--acc-rgb) / .42);-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.43) 38%,rgba(0,0,0,.14) 62%,transparent 80%);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.43) 38%,rgba(0,0,0,.14) 62%,transparent 80%)}
+.callout{border-color:rgb(var(--acc-rgb) / .45);background:rgba(14,14,26,.82)}
+.callout small{color:var(--acc)}
+.callout::after{background:linear-gradient(90deg,rgba(255,255,255,.45),rgba(255,255,255,0))}
+.tag{border-color:rgb(var(--acc-rgb) / .55);color:var(--acc)}
+.hold-notes li::before{background:var(--acc)}
+.plan.plus{border-color:rgb(var(--acc-rgb) / .5);background:#0B0B16;box-shadow:0 30px 90px -40px rgb(var(--acc-rgb) / .5)}
+.plan.plus>*{position:relative}
+.plan.plus::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background-color:rgb(var(--acc-rgb) / .22);-webkit-mask-image:radial-gradient(ellipse 90% 60% at 80% 0%,#000,transparent 85%);mask-image:radial-gradient(ellipse 90% 60% at 80% 0%,#000,transparent 85%)}
+.plan.plus h3{color:var(--acc)}
+/* modes match the app: Relax white haze, Normal neutral, Hardcore ember */
+.lvl .bar{box-shadow:0 0 var(--gl) var(--gc,transparent)}
+.lvl.l1{--c:rgba(255,255,255,.5)}
+.lvl.l2{--c:#fff;--gc:rgba(255,255,255,.35)}
+.lvl.l3{--c:var(--ember);--gc:rgba(255,90,54,.6)}
+.lvl.l3 .tag{border-color:rgba(255,90,54,.55);color:#FFB09C}
+/* family block */
+.fam{margin-top:96px}
+.fam h3{font-family:var(--sans);font-weight:500;font-size:var(--t-h2);line-height:1.04;letter-spacing:-.04em}
+.fam-intro p{color:var(--muted);margin-top:14px;font-size:var(--t-body);max-width:30em}
+.fam-list{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:26px}
+.fam-list li{font-size:var(--t-sm);color:var(--muted)}
+.fam-list .ico{display:block;width:28px;height:28px;margin-bottom:12px}
+.fam-list b{display:block;color:#fff;font-weight:500;font-size:var(--t-lead);letter-spacing:-.02em;line-height:1.25;margin-bottom:4px}
+@media (min-width:640px){.fam-list{grid-template-columns:repeat(3,1fr);gap:32px}}
+@media (min-width:900px){.fam{margin-top:160px;display:grid;grid-template-columns:.8fr 1.2fr;gap:40px 72px;align-items:start}.fam-list{margin-top:8px}}
+
+/* mode points (16 Nov 14:51): 2 short lines under each wait. "Deleting obu" still needs Alex's real-phone test (B4). */
+.lvl .pt{display:block;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:var(--t-sm);line-height:1.35;color:#fff}
+.lvl .pt small{display:block;font-size:var(--t-cap);color:var(--muted);margin-bottom:3px}
+.lvl .wait{padding-bottom:4px}
+@supports (grid-template-rows:subgrid){.scale{grid-template-rows:repeat(6,auto)}.lvl{grid-row:span 6}}
+@media (max-width:639px){.lvl.l3 strong{white-space:normal}.lvl .tag{margin-left:0;display:table;margin-top:4px}}
+
+/* mode points v2 (16 Nov 14:52, Henry: hard to read, big "Right away", too many shades):
+   three identical rows per mode, label above value, two text shades only (white + muted). Colour lives on the bar alone. */
+.lvl strong{font-size:var(--t-lead);letter-spacing:-.01em}
+.lvl em{margin-bottom:6px}
+.lvl .pt{font-size:var(--t-body);font-weight:500;color:#fff}
+.lvl .pt small{font-weight:400;color:var(--muted)}
+
+/* orb name v2 (16 Nov 14:54): kept, heavier, white -> the orb's own colour; fades with the orb like the headline */
+.orb-name{font-size:14px;font-weight:600;letter-spacing:.18em;color:#fff;bottom:-26px;left:50%;right:auto;width:max-content;transform:translateX(-50%);padding-left:.18em}
+.orb-name{background-image:linear-gradient(90deg,#fff 0%,#fff 20%,var(--g2) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;transition:opacity .5s ease,--g2 2.4s ease-in-out}
+
+/* orb name v3 (16 Nov 14:59, Henry: gradient doesn't look good): a small chip, white name + one dot in the orb's colour */
+.orb-name{background-image:none;-webkit-text-fill-color:currentColor;color:#fff;display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background-color:rgba(255,255,255,.05);font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:none;bottom:-34px;transition:opacity .5s ease}
+.orb-name::before{content:"";width:8px;height:8px;border-radius:50%;background-color:var(--g2);box-shadow:0 0 10px var(--g2);transition:background-color 2.4s ease-in-out,box-shadow 2.4s ease-in-out}
+/* phones: all three the same size, uncropped (Henry: "the phone sizes aren't the same") */
+.steps .shot,.steps .shot.crop-low,.steps .shot.crop-high{aspect-ratio:auto;-webkit-mask-image:none;mask-image:none;overflow:visible;width:min(280px,74vw);margin:28px auto 0}
+.steps .shot img,.steps .shot.crop-low img,.steps .shot.crop-high img{position:static;box-shadow:0 30px 80px -24px rgba(0,0,0,.7)}
+.scene{width:min(280px,74vw);margin:28px auto 0}
+.steps .scene .shot{width:100%;margin:0}
+.callout{position:relative;right:auto;top:auto;width:auto;max-width:280px;margin:18px auto 0}
+.callout::after{display:none}
+@media (min-width:900px){
+  .step-hero{grid-template-columns:1fr 1fr;gap:72px}
+  .step-hero h3{font-size:var(--t-h3);line-height:1.15}
+  .step-hero p{font-size:var(--t-body)}
+  .steps .shot,.steps .shot.crop-low,.steps .shot.crop-high{width:300px;margin:0 auto}
+  .scene{width:300px;margin:0 auto}
+  .steps .scene .shot{width:100%}
+  .steps{gap:96px}
+}
+/* family galaxy: named orbs, names not faces */
+.gal{position:relative;margin:36px auto 0;width:min(340px,86vw);aspect-ratio:1}
+.gal .ring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(255,255,255,.10);transform:translate(-50%,-50%)}
+.gal .r1{width:52%;height:52%}.gal .r2{width:86%;height:86%;border-style:dashed;border-color:rgba(255,255,255,.08)}
+.who{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-34px);display:flex;flex-direction:column;align-items:center;text-align:center;width:90px}
+.who img{width:56px;height:56px}
+.who b{font-size:var(--t-sm);font-weight:500;color:#fff;line-height:1.2;margin-top:2px}
+.who span{font-size:12px;color:var(--muted);line-height:1.3}
+.who.me{transform:translate(-50%,-48px)}
+.who.me img{width:84px;height:84px}
+@media (min-width:900px){
+  .fam{grid-template-columns:.8fr 1.2fr}
+  .fam-intro{grid-column:1;grid-row:1}
+  .gal{grid-column:2;grid-row:1 / span 2;width:420px;margin:0 auto}
+  .fam-list{grid-column:1;grid-row:2;grid-template-columns:1fr;gap:22px;margin-top:0}
+  .who img{width:68px;height:68px}.who{transform:translate(-50%,-40px)}
+  .who.me img{width:104px;height:104px}.who.me{transform:translate(-50%,-58px)}
+}
+
+/* phones v3 (16 Nov 15:02, Henry: cut-off is fine, same size matters): one window for all three, 780:1180.
+   Steps 1 + 3 show the top of the screen and fade out at the bottom; step 2 shows the bottom (orb to button) and fades in at the top. */
+.steps .shot,.steps .shot.crop-low,.steps .shot.crop-high{aspect-ratio:780/1180;overflow:hidden;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+.steps .shot img,.steps .shot.crop-low img,.steps .shot.crop-high img{position:absolute;top:0;bottom:auto;left:0;box-shadow:none}
+.steps .scene .shot{-webkit-mask-image:linear-gradient(transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(transparent,#000 10%,#000 90%,transparent)}
+.steps .scene .shot img{top:-35%;bottom:auto}
+.steps .scene .shot .cover{display:none}
+
+/* round 15:04–15:06 */
+@supports (grid-template-rows:subgrid){.scale{grid-template-rows:repeat(7,auto)}.lvl{grid-row:span 7}}
+/* callout back beside the phone on desktop, with its line to the "You said" row (Henry: "quite clever") */
+@media (min-width:900px){
+  .step-hero .step-copy{max-width:400px}
+  .callout{position:absolute;right:calc(100% - 18px);top:36%;transform:translateY(-50%);width:236px;max-width:none;margin:0}
+  .callout::after{display:block;content:"";position:absolute;left:100%;top:50%;width:64px;height:1px;background:linear-gradient(90deg,rgb(var(--acc-rgb) / .9),rgb(var(--acc-rgb) / 0))}
+  .callout q{font-size:22px;line-height:1.25}
+}
+/* galaxy v2: a lit card, bigger orbs, hours as chips */
+.gal{width:min(360px,90vw);border-radius:32px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.012));overflow:hidden}
+.gal::before{content:"";position:absolute;inset:0;pointer-events:none;background-color:rgb(var(--acc-rgb) / .30);-webkit-mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);mask-image:radial-gradient(closest-side,#000,rgba(0,0,0,.35) 45%,transparent 78%);transition:background-color 2.4s ease-in-out}
+.gal .ring{border-color:rgba(255,255,255,.16)}
+.gal .r1{width:50%;height:50%}.gal .r2{width:80%;height:80%;border-color:rgba(255,255,255,.12)}
+.gal-k{position:absolute;left:18px;top:16px;font-size:var(--t-cap);letter-spacing:.08em;text-transform:uppercase;color:var(--acc);transition:color 2.4s ease-in-out}
+.who{width:96px;transform:translate(-50%,-38px)}
+.who img{width:64px;height:64px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}
+.who b{font-size:var(--t-body);font-weight:600;margin-top:0}
+.who span{margin-top:4px;padding:2px 9px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);color:#E6E6F0;font-size:12px;font-variant-numeric:tabular-nums}
+.who.me{transform:translate(-50%,-54px)}
+.who.me img{width:96px;height:96px}
+.who.me span{background:rgba(143,227,180,.14);border-color:rgba(143,227,180,.35);color:var(--good)}
+@media (min-width:900px){
+  .gal{width:480px}
+  .who{width:120px;transform:translate(-50%,-48px)}.who img{width:84px;height:84px}
+  .who.me{transform:translate(-50%,-70px)}.who.me img{width:128px;height:128px}
+  .who span{font-size:13px}
+}
+
+/* galaxy v3 (17 Nov, Henry: "improve the galaxy"): the app's Galaxy on the page. You fixed in the middle, the others orbit
+   a tilted ring with depth (front = bigger + brighter + in front of you, back = smaller + dimmer + behind you).
+   Compositor only: transform / opacity animations; z-index flips once per half-turn. Reduced motion = still positions. */
+.gal{--W:min(360px,90vw);--rf:.35;--k:.68;--T:70s;--cy:51%;--os:50px;--ys:84px}
+.gal .ring,.gal>.who{display:none}
+.gal::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:radial-gradient(ellipse 70% 45% at 50% var(--cy),rgba(0,0,0,0),rgba(3,3,10,.55))}
+.gx-sky,.gx-sky2{position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(1px 1px at 12% 18%,#fff,transparent 99%),radial-gradient(1px 1px at 82% 12%,rgba(255,255,255,.8),transparent 99%),radial-gradient(1.4px 1.4px at 64% 30%,rgba(255,255,255,.9),transparent 99%),radial-gradient(1px 1px at 28% 64%,rgba(255,255,255,.7),transparent 99%),radial-gradient(1px 1px at 90% 74%,#fff,transparent 99%),radial-gradient(1.2px 1.2px at 8% 88%,rgba(255,255,255,.8),transparent 99%),radial-gradient(1px 1px at 46% 92%,rgba(255,255,255,.6),transparent 99%),radial-gradient(1px 1px at 72% 52%,rgba(255,255,255,.55),transparent 99%),radial-gradient(1px 1px at 38% 8%,rgba(255,255,255,.7),transparent 99%),radial-gradient(1.3px 1.3px at 18% 42%,rgba(255,255,255,.85),transparent 99%);opacity:.55}
+.gx-sky2{transform:rotate(180deg);opacity:.35;animation:gxtw 7s ease-in-out infinite alternate}
+@keyframes gxtw{from{opacity:.12}to{opacity:.5}}
+.gx-ring{position:absolute;left:50%;top:var(--cy);width:calc(var(--W) * var(--rf) * 2);height:calc(var(--W) * var(--rf) * 2 * var(--k));transform:translate(-50%,-50%);overflow:visible;pointer-events:none}
+.gx-ring ellipse{fill:none;vector-effect:non-scaling-stroke}
+.gx-you{position:absolute;left:50%;top:var(--cy);z-index:4;width:var(--ys);height:var(--ys);transform:translate(-50%,-50%)}
+.gx-you img{display:block;width:100%;height:100%;filter:drop-shadow(0 0 28px rgb(var(--acc-rgb) / .45))}
+.gx-pill{display:inline-flex;align-items:baseline;gap:6px;white-space:nowrap;padding:3px 10px;border-radius:999px;background:rgba(14,14,26,.72);border:1px solid rgba(255,255,255,.12);font-size:12.5px;line-height:1.35;font-variant-numeric:tabular-nums;color:var(--muted)}
+.gx-pill b{color:#fff;font-weight:600;font-size:inherit;margin:0}
+.gx-p .gx-pill{margin-top:calc(var(--os) * -.16)}
+.gx-you .gx-pill{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);background:rgba(16,40,30,.86);border-color:rgba(143,227,180,.4);color:var(--good)}
+.gx-you .gx-pill b{color:#fff}
+.gx-o{position:absolute;left:50%;top:var(--cy);width:0;height:0;z-index:6;transform:scaleY(var(--k));animation:gxz var(--T) linear infinite;animation-delay:calc(var(--pn) / -360 * var(--T))}
+.gx-arm{position:absolute;left:0;top:0;transform:rotate(calc(var(--pn) * 1deg));animation:gxspin var(--T) linear infinite;animation-delay:inherit}
+.gx-pos{position:absolute;left:0;top:0;transform:translateX(calc(var(--W) * var(--rf)))}
+.gx-un{position:absolute;left:0;top:0;transform:rotate(calc(var(--pn) * -1deg)) scaleY(calc(1 / var(--k)));animation:gxun var(--T) linear infinite;animation-delay:inherit}
+.gx-p{position:absolute;left:0;top:0;width:120px;display:flex;flex-direction:column;align-items:center;gap:4px;transform-origin:50% calc(var(--os) / 2);transform:translate(-50%,calc(var(--os) / -2));animation:gxdepth var(--T) linear infinite;animation-delay:inherit}
+.gx-p img{display:block;width:var(--os);height:var(--os);filter:drop-shadow(0 6px 16px rgba(0,0,0,.55));animation:gxdim var(--T) linear infinite;animation-delay:inherit}
+.gx-arm,.gx-pos,.gx-un,.gx-p{animation-delay:calc(var(--pn) / -360 * var(--T))}
+.gx-p img{animation-delay:calc(var(--pn) / -360 * var(--T))}
+@keyframes gxspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes gxun{from{transform:rotate(0deg) scaleY(calc(1 / var(--k)))}to{transform:rotate(-360deg) scaleY(calc(1 / var(--k)))}}
+@keyframes gxdepth{
+  0%{transform:translate(-50%,calc(var(--os) / -2)) scale(.97);animation-timing-function:ease-out}
+  25%{transform:translate(-50%,calc(var(--os) / -2)) scale(1.12);animation-timing-function:ease-in}
+  50%{transform:translate(-50%,calc(var(--os) / -2)) scale(.97);animation-timing-function:ease-out}
+  75%{transform:translate(-50%,calc(var(--os) / -2)) scale(.8);animation-timing-function:ease-in}
+  100%{transform:translate(-50%,calc(var(--os) / -2)) scale(.97)}}
+@keyframes gxdim{0%{opacity:.9;animation-timing-function:ease-out}25%{opacity:1;animation-timing-function:ease-in}50%{opacity:.9;animation-timing-function:ease-out}75%{opacity:.55;animation-timing-function:ease-in}100%{opacity:.9}}
+@keyframes gxz{0%,49.99%{z-index:6}50%,100%{z-index:2}}
+.gal-t{position:absolute;right:18px;top:16px;font-size:var(--t-cap);letter-spacing:.02em;color:var(--muted);font-variant-numeric:tabular-nums}
+.gal-t b{color:#fff;font-weight:600}
+@media (min-width:900px){
+  .gal{--W:480px;--rf:.39;--os:76px;--ys:116px}
+  .gx-pill{font-size:13.5px;padding:4px 12px}
+}
 </style>
 </head>
 <body>
-<main>
-  <div class="mark"><img src="icon-192.png" alt=""><span>obu</span></div>
-  <h1>Look up. Take back your universe.</h1>
-  <p>The screen time app for iPhone that blocks the apps that pull you in, and grows a living orb while you stay off them.</p>
-  <span class="soon">Coming soon to iPhone</span>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="obu home"><svg class="emb" viewBox="-102 -102 204 204" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M-100 0A100 100 0 1 0 100 0A100 100 0 1 0 -100 0ZM-22.26 -43.94A17.70 17.70 0 0 0 -32.36 -64.96A28.00 28.00 0 0 0 -64.16 -57.97A95.04 95.04 0 0 0 -80.71 43.61A31.38 31.38 0 0 0 -67.51 58.33A13.00 13.00 0 0 0 -48.54 50.52L-22.26 -43.94ZM1.55 -29.09A5.50 5.50 0 0 0 -9.08 -30.70A347.85 347.85 0 0 0 -31.13 72.34A13.00 13.00 0 0 0 -24.12 84.65A62.00 62.00 0 0 0 14.47 90.75A44.23 44.23 0 0 0 40.17 76.66A28.00 28.00 0 0 0 44.00 44.70L26.61 12.33A5.50 5.50 0 0 0 16.28 14.49L12.88 56.07A3.00 3.00 0 0 1 6.89 56.01L1.55 -29.09ZM57.46 -25.23A62.00 62.00 0 0 1 69.21 0.62A3.00 3.00 0 0 1 63.66 2.68A165.30 165.30 0 0 0 23.24 -44.97A5.50 5.50 0 0 0 14.99 -38.00L58.91 40.62A13.00 13.00 0 0 0 81.77 40.32A31.40 31.40 0 0 0 83.77 35.61A95.04 95.04 0 0 0 64.16 -57.97A28.00 28.00 0 0 0 35.39 -66.06A5.50 5.50 0 0 0 32.60 -57.43L57.46 -25.23Z"/></svg>obu</a>
+    <nav class="nav-links" aria-label="Page">
+      <a href="#how">How it works</a>
+      <a href="#strict">Will it stop me?</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#questions">Questions</a>
+    </nav>
+    <a class="btn btn-sm" href="#join" data-jump>Join the waitlist</a>
+  </div>
+</header>
+
+<main id="top">
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="orb-stage rise">
+      <div class="orb" id="orbcycle" aria-hidden="true">
+      </div>
+      <p class="orb-name" id="orbname" aria-hidden="true">Auralith</p>
+    </div>
+    <div class="hero-copy">
+      <p class="kicker rise d1">The screen time app for iPhone</p>
+      <h1 class="rise d1"><span>Look up.</span><span class="grad">Make time for<br>what matters.</span></h1>
+      <p class="sub rise d2">obu blocks the apps you open out of habit, and shows every hour you win back.</p>
+
+      <div class="signup rise d3" data-signup>
+        <form novalidate>
+          <label class="sr" for="email-hero">Email address</label>
+          <input id="email-hero" type="email" name="email" inputmode="email" autocomplete="email" placeholder="Your email" required aria-describedby="err-hero">
+          <button class="btn" type="submit">Join the waitlist</button>
+          <p class="err" id="err-hero" role="alert"></p>
+        </form>
+        <p class="done" role="status" tabindex="-1">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><circle cx="13" cy="13" r="12" stroke="currentColor" stroke-width="1.5"/><path d="M8 13.5l3.4 3.4L18.2 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>You're in — check your inbox to confirm</span>
+        </p>
+        <p class="fine">Early access. One email to confirm, one when the beta opens. No spam.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="strip" aria-label="obu at a glance">
+  <div class="wrap"><ul>
+    <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5-4-1.3-7-5.1-7-9.5V6l7-3z"/></svg><b>Blocks that hold</b><span>Turning one off takes a wait, not a tap.</span></li>
+    <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></svg><b>Private by design</b><span>Your usage never leaves your iPhone. Not even we can see it.</span></li>
+    <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v9M14.6 9.6c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.6 5.4 1.3 5.4 3.9 0 1.1-1.2 1.9-2.8 1.9-1.2 0-2.2-.5-2.7-1.3"/></svg><b>Free plan, for good</b><span>It never expires.</span></li>
+    <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg><b>Built to solve one problem</b><span>Less time lost to your phone. Nothing else.</span></li>
+  </ul></div>
+</section>
+
+<!-- HOURS v6 (16 Nov 14:31): 3 stat cards, each = context + mini visual + number + line + source -->
+<section class="sec hours" id="hours">
+  <div class="wrap">
+    <div class="hours-top rv">
+      <h2>How much of your year goes to your phone?</h2>
+      <p class="day-line">The average American spends 4h 5m a day on it. A quarter of the waking day.</p>
+    </div>
+    <div class="scs rv">
+      <figure class="sc sc-b">
+        <p class="sc-k">In a year</p>
+        <div class="sc-v months" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class=on></i><i class=on></i></div>
+        <b>62 days</b>
+        <p>on your phone. That's about all of November and December.</p>
+        <cite>Reviews.org, 2026 · 4h 5m × 365</cite>
+      </figure>
+      <figure class="sc sc-w">
+        <p class="sc-k">In a day</p>
+        <div class="sc-v tk" aria-hidden="true"><i style="left:0.1%"></i><i style="left:0.3%"></i><i style="left:0.4%"></i><i style="left:0.6%"></i><i style="left:0.9%"></i><i style="left:0.9%"></i><i style="left:1.5%"></i><i style="left:1.7%"></i><i style="left:1.8%"></i><i style="left:2.3%"></i><i style="left:2.8%"></i><i style="left:4.1%"></i><i style="left:4.2%"></i><i style="left:4.3%"></i><i style="left:4.4%"></i><i style="left:4.7%"></i><i style="left:4.8%"></i><i style="left:4.8%"></i><i style="left:4.9%"></i><i style="left:5.0%"></i><i style="left:5.2%"></i><i style="left:5.5%"></i><i style="left:5.8%"></i><i style="left:5.9%"></i><i style="left:6.0%"></i><i style="left:6.1%"></i><i style="left:6.2%"></i><i style="left:6.5%"></i><i style="left:7.4%"></i><i style="left:7.6%"></i><i style="left:7.9%"></i><i style="left:8.7%"></i><i style="left:9.0%"></i><i style="left:9.2%"></i><i style="left:9.4%"></i><i style="left:10.9%"></i><i style="left:11.0%"></i><i style="left:14.0%"></i><i style="left:14.4%"></i><i style="left:15.3%"></i><i style="left:15.5%"></i><i style="left:15.7%"></i><i style="left:16.3%"></i><i style="left:17.8%"></i><i style="left:18.1%"></i><i style="left:18.1%"></i><i style="left:19.4%"></i><i style="left:19.7%"></i><i style="left:23.1%"></i><i style="left:24.9%"></i><i style="left:26.1%"></i><i style="left:26.4%"></i><i style="left:27.8%"></i><i style="left:27.9%"></i><i style="left:27.9%"></i><i style="left:29.3%"></i><i style="left:30.3%"></i><i style="left:30.8%"></i><i style="left:31.2%"></i><i style="left:31.2%"></i><i style="left:31.8%"></i><i style="left:32.1%"></i><i style="left:32.2%"></i><i style="left:32.3%"></i><i style="left:32.4%"></i><i style="left:32.5%"></i><i style="left:32.9%"></i><i style="left:33.0%"></i><i style="left:33.2%"></i><i style="left:33.6%"></i><i style="left:33.8%"></i><i style="left:34.4%"></i><i style="left:35.2%"></i><i style="left:35.4%"></i><i style="left:36.5%"></i><i style="left:37.3%"></i><i style="left:38.1%"></i><i style="left:38.4%"></i><i style="left:38.7%"></i><i style="left:38.8%"></i><i style="left:40.3%"></i><i style="left:40.4%"></i><i style="left:41.7%"></i><i style="left:42.7%"></i><i style="left:43.2%"></i><i style="left:43.4%"></i><i style="left:43.5%"></i><i style="left:45.0%"></i><i style="left:45.8%"></i><i style="left:46.0%"></i><i style="left:46.2%"></i><i style="left:46.6%"></i><i style="left:46.6%"></i><i style="left:47.5%"></i><i style="left:47.6%"></i><i style="left:47.9%"></i><i style="left:49.0%"></i><i style="left:49.2%"></i><i style="left:49.9%"></i><i style="left:51.1%"></i><i style="left:51.7%"></i><i style="left:52.5%"></i><i style="left:53.4%"></i><i style="left:54.2%"></i><i style="left:56.8%"></i><i style="left:57.0%"></i><i style="left:57.5%"></i><i style="left:57.6%"></i><i style="left:58.7%"></i><i style="left:61.4%"></i><i style="left:62.4%"></i><i style="left:63.6%"></i><i style="left:64.7%"></i><i style="left:65.0%"></i><i style="left:65.4%"></i><i style="left:65.5%"></i><i style="left:66.2%"></i><i style="left:67.1%"></i><i style="left:67.3%"></i><i style="left:67.6%"></i><i style="left:67.7%"></i><i style="left:68.4%"></i><i style="left:69.3%"></i><i style="left:69.3%"></i><i style="left:69.4%"></i><i style="left:69.8%"></i><i style="left:70.6%"></i><i style="left:70.9%"></i><i style="left:71.1%"></i><i style="left:71.3%"></i><i style="left:72.9%"></i><i style="left:73.1%"></i><i style="left:74.2%"></i><i style="left:74.3%"></i><i style="left:75.1%"></i><i style="left:75.9%"></i><i style="left:76.2%"></i><i style="left:76.8%"></i><i style="left:77.2%"></i><i style="left:77.5%"></i><i style="left:77.9%"></i><i style="left:78.7%"></i><i style="left:79.7%"></i><i style="left:80.1%"></i><i style="left:80.3%"></i><i style="left:80.7%"></i><i style="left:81.8%"></i><i style="left:82.7%"></i><i style="left:83.8%"></i><i style="left:85.8%"></i><i style="left:86.2%"></i><i style="left:86.6%"></i><i style="left:86.7%"></i><i style="left:87.0%"></i><i style="left:87.0%"></i><i style="left:87.4%"></i><i style="left:87.8%"></i><i style="left:87.9%"></i><i style="left:88.3%"></i><i style="left:88.6%"></i><i style="left:88.7%"></i><i style="left:89.3%"></i><i style="left:90.2%"></i><i style="left:90.4%"></i><i style="left:90.7%"></i><i style="left:90.7%"></i><i style="left:90.8%"></i><i style="left:91.3%"></i><i style="left:91.6%"></i><i style="left:91.8%"></i><i style="left:91.8%"></i><i style="left:93.5%"></i><i style="left:93.5%"></i><i style="left:94.5%"></i><i style="left:95.4%"></i><i style="left:95.7%"></i><i style="left:96.0%"></i><i style="left:96.6%"></i><i style="left:96.9%"></i><i style="left:96.9%"></i><i style="left:97.2%"></i><i style="left:97.3%"></i><i style="left:97.4%"></i><i style="left:98.8%"></i><i style="left:99.4%"></i><i style="left:100.0%"></i><span class="tk-l" style="left:0">7 AM</span><span class="tk-l" style="left:50%;transform:translateX(-50%)">3 PM</span><span class="tk-l" style="right:0">11 PM</span></div>
+        <b>186</b>
+        <p>pickups. About one every 5 minutes you're awake.</p>
+        <cite>Reviews.org, 2026</cite>
+      </figure>
+      <figure class="sc sc-g">
+        <p class="sc-k">In a study</p>
+        <div class="sc-v bns" role="img" aria-label="Wellbeing, mood and focus all went up"><span class="bn"><svg class="bn-i" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7.5a4.5 4.5 0 1 0 .01 0zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bn-t">Wellbeing<svg class="bn-up" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2.5M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span class="bn"><svg class="bn-i" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bn-t">Mood<svg class="bn-up" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2.5M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span class="bn"><svg class="bn-i" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 .01 0zM12 7.5a4.5 4.5 0 1 0 .01 0zM12 11a1 1 0 1 0 .01 0z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="bn-t">Focus<svg class="bn-up" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10V2.5M2.5 5.5L6 2l3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span></div>
+        <b>91%</b>
+        <p>of people got better after 2 weeks without mobile internet. Focus came back like 10 years younger.</p>
+        <cite>Castelo et al., PNAS Nexus, 2025</cite>
+      </figure>
+    </div>
+    <p class="scs-foot rv">The catch: only 119 of the 467 people kept the block on for 10 of the 14 days. <b>Willpower gives way. obu holds the line for you.</b></p>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec how" id="how">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>How obu works</h2>
+      <p class="lede">Three steps. You set it up once, and it runs on its own.</p>
+    </div>
+
+    <ol class="steps">
+      <li class="step step-sm s1 rv">
+        <div class="step-copy">
+          <span class="step-n" aria-hidden="true">1</span>
+        <h3>Choose what to block, and when.</h3>
+        <p>Pick the apps you open out of habit. Each block you set is called a guard, and it runs one of three ways.</p>
+        <ul>
+          <li><b>Quick sessions</b><span>Block now, until a timer ends. For reading, a workout, or dinner.</span></li>
+          <li><b>Schedules</b><span>The same hours every week. Work 9–5, or nights 11–7.</span></li>
+          <li><b>Limits</b><span>A daily cap per app: 30 minutes, or 10 opens.</span></li>
+        </ul>
+        </div>
+        <div class="shot crop-high"><img src="assets/screens/guards.webp" alt="obu Guards screen in Normal mode: quick sessions for Reading, Focus and Workout, a Work schedule from 9 AM to 5 PM that is on now, a Night schedule, and a limit on Instagram of 30 min or 10 opens a day." width="780" height="1688" loading="lazy"></div>
+      </li>
+      <li class="step step-hero s2 rv">
+        <div class="step-copy">
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>obu steps in when you reach for one.</h3>
+          <p>Open a blocked app and you see obu's screen instead. It shows what's left for today, and the reason you gave for cutting back.</p>
+        </div>
+        <div class="scene">
+          <div class="shot"><img src="assets/screens/block-screen.webp" alt="obu block screen: 25 min left today, You said: Be there at dinner, 8 of 10 opens left, with a Close Instagram button." width="780" height="1688" loading="lazy"><span class="cover" aria-hidden="true"></span></div>
+          <p class="callout" aria-hidden="true"><small>You said:</small><q>Be there at dinner</q></p>
+        </div>
+      </li>
+      <li class="step step-sm s3 rv">
+        <div class="step-copy">
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>See the time you win back.</h3>
+          <p>obu counts the hours your guards held, and calls them hours back. They add up for good: a bad day never takes any away. As they grow, the orb in the app changes form. There are 25 to find.</p>
+        </div>
+        <div class="shot crop-low"><img src="assets/screens/home.webp" alt="obu Home screen: a violet orb above 2h 10m taken back today, with today's screen time 35 minutes under usual." width="780" height="1688" loading="lazy"></div>
+      </li>
+    </ol>
+
+    <!-- objection: will it actually stop me -->
+    <div class="hold" id="strict">
+      <div class="hold-intro rv">
+        <h3>Will it actually stop me?</h3>
+        <p>Yes, as firmly as you choose. You pick one strictness mode for the whole app, while you're thinking clearly. In Normal and Hardcore, turning a guard off takes a wait that outlasts the urge.</p>
+      </div>
+      <div class="scale rv" role="list">
+        <div class="lvl l1" role="listitem"><span class="bar" aria-hidden="true"></span>
+          <strong>Relax</strong><em>A nudge.</em>
+          <span class="pt"><small>Pausing a guard</small>Right away</span>
+          <span class="pt"><small>Daily cap per app</small>2 h a day</span>
+          <span class="pt"><small>When a limit is met</small>A breath, then 15 more min</span>
+          <span class="pt"><small>Deleting obu</small>Allowed</span>
+        </div>
+        <div class="lvl l2" role="listitem"><span class="bar" aria-hidden="true"></span>
+          <strong>Normal</strong><em>Real limits.</em>
+          <span class="pt"><small>Pausing a guard</small>15 min wait</span>
+          <span class="pt"><small>Daily cap per app</small>1 h or 10 opens</span>
+          <span class="pt"><small>When a limit is met</small>1 escape pass a day</span>
+          <span class="pt"><small>Deleting obu</small>Blocked</span>
+        </div>
+        <div class="lvl l3" role="listitem"><span class="bar" aria-hidden="true"></span>
+          <strong>Hardcore<span class="tag">Plus</span></strong><em>The strict one.</em>
+          <span class="pt"><small>Pausing a guard</small>24 h wait</span>
+          <span class="pt"><small>Daily cap per app</small>30 min or 3 opens</span>
+          <span class="pt"><small>When a limit is met</small>No way back in</span>
+          <span class="pt"><small>Deleting obu</small>Locked on</span>
+        </div>
+      </div>
+      <ul class="hold-notes rv">
+        <li>Making a guard stricter is always instant.</li>
+        <li>No passcode skips the wait in Hardcore.</li>
+        <li>For real emergencies: all guards off for 24 hours, once every 30 days.</li>
+        <li>For comparison: a limit in Apple's Screen Time ends with one tap on Ignore Limit.</li>
+      </ul>
+    </div>
+
+    <!-- family / friends (16 Nov 14:41): only claims already on the page; parent-mode detail waits on B6 -->
+    <div class="fam rv" id="family">
+      <div class="fam-intro">
+        <h3>With family or friends.</h3>
+        <p>Cutting back is easier when someone's doing it with you.</p>
+      </div>
+      <figure class="gal" aria-label="You in the middle, with Mom, Dad, Sister and Brother orbiting around you. Each shows only hours back this week: you 11, Mom 9, Dad 6, Sister 14, Brother 4.">
+        <span class="gx-sky" aria-hidden="true"></span><span class="gx-sky2" aria-hidden="true"></span>
+        <span class="gal-k" aria-hidden="true">This week</span><span class="gal-t" aria-hidden="true"><b>44h</b> back together</span>
+        <svg class="gx-ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="gxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".05"/><stop offset=".55" stop-color="#fff" stop-opacity=".14"/><stop offset="1" stop-color="#fff" stop-opacity=".38"/></linearGradient></defs><ellipse cx="50" cy="50" rx="50" ry="50" stroke="url(#gxg)" stroke-width="6" opacity=".18"/><ellipse cx="50" cy="50" rx="50" ry="50" stroke="url(#gxg)" stroke-width="1.2"/></svg>
+        <div class="gx-you" aria-hidden="true"><img src="assets/thumbs/amethia.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>You</b>11h</span></div>
+        <div class="gx-o" style="--pn:300" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/iridia.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Sister</b>14h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:210" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/seriphae.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Mom</b>9h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:30" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/obura.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Dad</b>6h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:120" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/pyralis.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Brother</b>4h</span></div></div></div></div></div>
+      </figure>
+      <ul class="fam-list">
+        <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17 14.2c2.2.2 3.6 1.6 4 4.3"/></svg><b>Invite up to five people</b><span>Follow each other's progress.</span></li>
+        <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6z"/><circle cx="12" cy="12" r="2.6"/><path d="M4 4l16 16"/></svg><b>They see progress only</b><span>Never your apps or your minutes.</span></li>
+        <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.4-3 8.2-7 9.5-4-1.3-7-5.1-7-9.5V6l7-3z"/><circle cx="12" cy="10" r="2"/><path d="M8.8 15.2c.6-1.4 1.8-2.2 3.2-2.2s2.6.8 3.2 2.2"/></svg><b>Parent mode for kids' phones</b><span>On the Family plan, for up to 6.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="sec privacy-sec" id="privacy">
+  <div class="wrap privacy">
+    <h2 class="rv">obu can't see what you do on your phone.</h2>
+    <ul class="rv">
+      <li><b>It runs on Apple's Screen Time.</b> The blocking is done by your iPhone, not by a server of ours.</li>
+      <li><b>Your usage data never leaves your iPhone.</b> Your apps and your minutes stay on the device.</li>
+      <li><b>No ads, no profiling.</b> obu is paid for by the people who use it.</li>
+      <li><b>Friends see progress only.</b> If you invite family or friends, they see how you're doing, never your apps or minutes.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec pricing" id="pricing">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Free for good. Plus for $29.99 a year.</h2>
+      <p class="lede">Joining the waitlist costs nothing. This is what obu will cost when it opens.</p>
+    </div>
+    <div class="plans rv">
+      <div class="plan">
+        <h3>Free, for good</h3>
+        <p class="price">$0</p>
+        <p class="note">Never expires. Nothing to pay.</p>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>1 schedule + 1 limit</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Relax and Normal modes</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>All 25 orb forms</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Your hours-back count</li>
+        </ul>
+      </div>
+      <div class="plan plus">
+        <h3>Plus, yearly</h3>
+        <p class="price">$29.99<small>a year</small></p>
+        <p class="note">$2.50 a month. 14 days free first: nothing to pay today, cancel before day 14 and you pay nothing.</p>
+        <ul>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Hardcore mode</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited schedules and limits</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>30-day challenge</li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7.5l3.2 3.2L12 3.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Family</li>
+        </ul>
+        <div class="others">
+          <div><span>Monthly</span><b>$4.99</b></div>
+          <div><span>Family, up to 6, with parent mode</span><b>$39.99 a year</b></div>
+          <div><span>Lifetime</span><b>$79.99 once</b></div>
+        </div>
+      </div>
+    </div>
+    <p class="price-foot">For comparison, Opal Pro is $99.99 a year.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec note-sec" id="today">
+  <div class="wrap"><div class="note rv">
+    <p class="note-k">The problem we're solving</p>
+    <p>Phones are built to be picked up. Most screen time tools are built to be dismissed: one tap and the limit is gone.</p>
+    <p>obu is our answer. Blocks that take effort to undo, and an honest count of the time you get back.</p>
+    <p>It isn't out yet, so there are no reviews to show you, and we won't make any up. Everything you can check today is on this page: the screens, the rules, and every price.</p>
+    <p class="sig">Henry and Alex · <a href="mailto:hello@obu-app.com">hello@obu-app.com</a></p>
+  </div></div>
+</section>
+
+<section class="sec questions" id="questions">
+  <div class="wrap faq-grid">
+    <h2>Questions people ask first</h2>
+    <div class="faq rv">
+      <details>
+        <summary>When can I use it?</summary>
+        <p>obu hasn't launched yet. The TestFlight beta opens soon, and we won't promise a date we can't keep. Join the waitlist and you get one email when it opens.</p>
+      </details>
+      <details>
+        <summary>How is it different from Apple's Screen Time?</summary>
+        <p>A Screen Time limit ends with one tap on Ignore Limit. In obu's Normal and Hardcore modes, turning a guard off takes a 15-minute or 24-hour wait, and obu shows you the hours you win back.</p>
+      </details>
+      <details>
+        <summary>What do I get for free?</summary>
+        <p>One guard, Relax and Normal modes, your hours-back count, and all 25 orb forms. The free plan never expires. Plus adds unlimited guards, Hardcore mode, the 30-day challenge, and Family.</p>
+      </details>
+      <details>
+        <summary>How does the 14-day trial work?</summary>
+        <p>The trial of Plus needs a card. We remind you on day 12. Cancel before day 14 and you pay nothing.</p>
+      </details>
+      <details>
+        <summary>What happens on a bad day?</summary>
+        <p>Nothing is taken away. Your hours back and every orb form you've earned stay yours.</p>
+      </details>
+      <details>
+        <summary>Can obu see which apps I use?</summary>
+        <p>No. obu works through Apple's Screen Time, and your usage data never leaves your iPhone. Not even we can see it.</p>
+      </details>
+      <details>
+        <summary>Can I use it with family or friends?</summary>
+        <p>Yes. Invite up to five people and follow each other's progress. They never see your apps or minutes. The Family plan adds parent mode for kids' phones.</p>
+      </details>
+      <details>
+        <summary>What if I truly need a blocked app?</summary>
+        <p>There is an emergency stop: all guards off for 24 hours, once every 30 days. Outside of that, turning a guard off takes the wait your mode sets.</p>
+      </details>
+      <details>
+        <summary>Is there an Android version?</summary>
+        <p>iPhone first. Android comes later.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="join">
+  <div class="wrap">
+    <h2>Start with one hour back.</h2>
+    <p class="lede">Leave your email, and we'll tell you when the beta opens.</p>
+    <div class="signup" data-signup>
+      <form novalidate>
+        <label class="sr" for="email-final">Email address</label>
+        <input id="email-final" type="email" name="email" inputmode="email" autocomplete="email" placeholder="Your email" required aria-describedby="err-final">
+        <button class="btn" type="submit">Join the waitlist</button>
+        <p class="err" id="err-final" role="alert"></p>
+      </form>
+      <p class="done" role="status" tabindex="-1">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><circle cx="13" cy="13" r="12" stroke="currentColor" stroke-width="1.5"/><path d="M8 13.5l3.4 3.4L18.2 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>You're in — check your inbox to confirm</span>
+      </p>
+      <p class="fine">Early access. One email to confirm, one when the beta opens. No spam.</p>
+    </div>
+  </div>
+</section>
+
 </main>
+
+<footer>
+  <div class="wrap">
+    <span class="mark" aria-hidden="true"><svg class="emb" viewBox="-102 -102 204 204" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M-100 0A100 100 0 1 0 100 0A100 100 0 1 0 -100 0ZM-22.26 -43.94A17.70 17.70 0 0 0 -32.36 -64.96A28.00 28.00 0 0 0 -64.16 -57.97A95.04 95.04 0 0 0 -80.71 43.61A31.38 31.38 0 0 0 -67.51 58.33A13.00 13.00 0 0 0 -48.54 50.52L-22.26 -43.94ZM1.55 -29.09A5.50 5.50 0 0 0 -9.08 -30.70A347.85 347.85 0 0 0 -31.13 72.34A13.00 13.00 0 0 0 -24.12 84.65A62.00 62.00 0 0 0 14.47 90.75A44.23 44.23 0 0 0 40.17 76.66A28.00 28.00 0 0 0 44.00 44.70L26.61 12.33A5.50 5.50 0 0 0 16.28 14.49L12.88 56.07A3.00 3.00 0 0 1 6.89 56.01L1.55 -29.09ZM57.46 -25.23A62.00 62.00 0 0 1 69.21 0.62A3.00 3.00 0 0 1 63.66 2.68A165.30 165.30 0 0 0 23.24 -44.97A5.50 5.50 0 0 0 14.99 -38.00L58.91 40.62A13.00 13.00 0 0 0 81.77 40.32A31.40 31.40 0 0 0 83.77 35.61A95.04 95.04 0 0 0 64.16 -57.97A28.00 28.00 0 0 0 35.39 -66.06A5.50 5.50 0 0 0 32.60 -57.43L57.46 -25.23Z"/></svg>obu</span>
+    <span>© 2026 obu · obu-app.com</span>
+    <a href="mailto:hello@obu-app.com">Contact</a>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky" aria-hidden="true">
+  <p><b>obu for iPhone</b>Free plan, for good. Beta opens soon.</p>
+  <a class="btn btn-sm" href="#join" data-jump tabindex="-1">Join the waitlist</a>
+</div>
+
+<script src="assets/orbs-live/hero.js" defer></script>
+<script>
+document.documentElement.classList.add('js');
+(function(){
+  /* Kit endpoint: https://app.kit.com/forms/<id>/subscriptions */
+  var WAITLIST_URL='';
+  var signups=[].slice.call(document.querySelectorAll('[data-signup]'));
+  var sticky=document.getElementById('sticky');
+  var joined=false;
+  var re=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  signups.forEach(function(box){
+    var form=box.querySelector('form'),input=box.querySelector('input'),err=box.querySelector('.err');
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var v=input.value.trim();
+      if(!v){fail('Enter your email address to join.');return}
+      if(!re.test(v)){fail('That email looks incomplete. Use the form name@example.com.');return}
+      var btn=form.querySelector('button');
+      if(!WAITLIST_URL){
+        /* no waitlist service yet: hand the sign-up to email, never fake a save */
+        location.href='mailto:hello@obu-app.com?subject='+encodeURIComponent('obu waitlist')+'&body='+encodeURIComponent('Add me to the obu waitlist: '+v);
+        done('Almost there. Send the email that just opened and you\u2019re on the list.');
+        return;
+      }
+      btn.disabled=true;btn.textContent='Joining\u2026';
+      var fd=new FormData();fd.append('email_address',v);
+      fetch(WAITLIST_URL,{method:'POST',body:fd,headers:{Accept:'application/json'}})
+        .then(function(r){if(!r.ok)throw 0;done()})
+        .catch(function(){btn.disabled=false;btn.textContent='Join the waitlist';fail('That didn\u2019t go through. Try again, or email hello@obu-app.com.')});
+    });
+    function done(msg){
+      joined=true;
+      signups.forEach(function(b){b.classList.add('is-done');if(msg)b.querySelector('.done span').textContent=msg});
+      setSticky(false);
+      box.querySelector('.done').focus({preventScroll:true});
+    }
+    input.addEventListener('input',function(){
+      if(input.getAttribute('aria-invalid')){input.removeAttribute('aria-invalid');err.textContent=''}
+    });
+    function fail(msg){input.setAttribute('aria-invalid','true');err.textContent=msg;input.focus()}
+  });
+
+  /* jump links: scroll to the final form and put the cursor in it */
+  [].slice.call(document.querySelectorAll('[data-jump]')).forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      var target=document.getElementById('join');
+      var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      target.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+      var input=document.getElementById('email-final');
+      if(!joined&&input){setTimeout(function(){input.focus({preventScroll:true})},reduce?0:650)}
+    });
+  });
+
+  /* sticky bar: only when no waitlist form is on screen */
+  function setSticky(on){
+    sticky.classList.toggle('on',on);
+    sticky.setAttribute('aria-hidden',on?'false':'true');
+    sticky.querySelector('a').tabIndex=on?0:-1;
+  }
+  if('IntersectionObserver' in window){
+    var visible=new Set();
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){en.isIntersecting?visible.add(en.target):visible.delete(en.target)});
+      setSticky(!joined&&visible.size===0&&window.scrollY>200);
+    },{threshold:0.2});
+    signups.forEach(function(b){io.observe(b)});
+  }
+
+  /* sky: still stars, drawn once (and again only when the width changes) */
+  (function(){
+    var c=document.getElementById('sky');if(!c||!c.getContext)return;
+    var lastW=0;
+    function draw(){
+      var w=c.clientWidth,h=c.clientHeight;if(!w||w===lastW)return;lastW=w;
+      var d=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*d);c.height=Math.round(h*d);
+      var x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);
+      var seed=7;function r(){seed=(seed*16807)%2147483647;return seed/2147483647}
+      var n=Math.round(w*h/5200),tint=['255,255,255','255,255,255','255,255,255','190,210,255','214,196,255'];
+      for(var i=0;i<n;i++){
+        var px=r()*w,py=Math.pow(r(),1.5)*h,big=r()<.06;
+        var rad=big?1.1+r()*.6:.35+r()*.55,a=big?.55+r()*.35:.12+r()*.38;
+        x.fillStyle='rgba('+tint[Math.floor(r()*tint.length)]+','+a.toFixed(2)+')';
+        x.beginPath();x.arc(px,py,rad,0,6.283);x.fill();
+        if(big){x.fillStyle='rgba(190,205,255,'+(a*.12).toFixed(3)+')';x.beginPath();x.arc(px,py,rad*3.2,0,6.283);x.fill()}
+      }
+    }
+    draw();var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(draw,200)});
+  })();
+
+
+
+  /* reveal on scroll: once; reduced motion = shown at once */
+  var rv=[].slice.call(document.querySelectorAll('.rv'));
+  if(!('IntersectionObserver' in window)||window.matchMedia('(prefers-reduced-motion: reduce)').matches){rv.forEach(function(e){e.classList.add('in')})}
+  else{var ro=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');ro.unobserve(en.target)}})},{rootMargin:'0px 0px -8% 0px',threshold:0.08});rv.forEach(function(e){ro.observe(e)})}
+})();
+</script>
 </body>
 </html>

@@ -777,6 +777,27 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 /* new orb stills have more air around the body: draw them larger */
 .gal{--os:68px;--ys:116px}
 @media (min-width:900px){.gal{--os:98px;--ys:158px}}
+/* galaxy v5 (17 Nov, Henry: "just rotation feels flat"): each orb is alive on its own.
+   Slow self-turn + breathing + a pulsing halo in its own colour, all out of step with each other.
+   Transform / opacity only (rotate + scale properties), so it stays on the compositor. */
+@keyframes gxturn{to{rotate:360deg}}
+@keyframes gxbreath{from{scale:.94}to{scale:1.07}}
+@keyframes gxsway{from{rotate:-5deg;scale:.96}to{rotate:5deg;scale:1.06}}
+@keyframes gxhalo{from{opacity:.35;transform:translateX(-50%) scale(.82)}to{opacity:.95;transform:translateX(-50%) scale(1.18)}}
+.gx-p img{animation:gxdim var(--T) linear infinite,gxturn var(--tt,46s) linear infinite,gxbreath var(--tb,4.6s) ease-in-out infinite alternate;animation-delay:calc(var(--pn) / -360 * var(--T)),calc(var(--pn) * -.11s),calc(var(--pn) * -.013s)}
+.gx-p img[src*="sumi"]{animation:gxdim var(--T) linear infinite,gxsway 5.2s ease-in-out infinite alternate;animation-delay:calc(var(--pn) / -360 * var(--T)),-1.3s}
+.gx-p img[src*="petalis"]{--tt:70s;--tb:5.8s}
+.gx-p img[src*="sylvara"]{--tt:34s;--tb:3.8s}
+.gx-you img{animation:gxturn 80s linear infinite reverse,gxbreath 5s ease-in-out infinite alternate}
+.gx-p::before,.gx-you::before{content:"";position:absolute;left:50%;top:calc(var(--os) * -.3);z-index:-1;width:calc(var(--os) * 1.6);height:calc(var(--os) * 1.6);border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgb(var(--hc,170 150 255) / .55),rgb(var(--hc,170 150 255) / .16) 55%,transparent 100%);
+  transform:translateX(-50%);animation:gxhalo var(--th,3.6s) ease-in-out infinite alternate;animation-delay:calc(var(--pn,0) * -.017s)}
+.gx-you::before{top:calc(var(--ys) * -.3);width:calc(var(--ys) * 1.6);height:calc(var(--ys) * 1.6);--hc:110 140 255;--th:4.4s}
+.gx-p:has(img[src*="petalis"]){--hc:255 150 200;--th:4.2s}
+.gx-p:has(img[src*="filara"]){--hc:255 170 120;--th:3.1s}
+.gx-p:has(img[src*="sylvara"]){--hc:110 235 140;--th:2.9s}
+.gx-p:has(img[src*="sumi"]){--hc:255 215 160;--th:3.8s}
+@media (prefers-reduced-motion:reduce){.gx-p img,.gx-you img,.gx-p::before,.gx-you::before{animation:none}}
 </style>
 </head>
 <body>

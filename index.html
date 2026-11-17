@@ -743,6 +743,37 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
 @media (max-width:639px){.lvl .pt{font-size:15.5px;line-height:1.3}.lvl strong{font-size:18px}}
 /* v7: phone hero showed "Join the waitlist" twice (top bar + form). The form is right there, and the sticky bar covers the rest of the page. */
 @media (max-width:899px){.nav .btn{display:none}}
+
+/* galaxy v4 (17 Nov, Henry: "more unique, clouds / nebula"): two cloud layers behind the orbit.
+   Colour = soft radial gradients; cloud shape = a noise image used as a mask (drawn once, no live filter).
+   Motion = slow transform drift only (compositor). Fixed palette: it does not follow the page accent. */
+.sec.how{overflow-x:clip}
+.gx-neb{position:absolute;left:50%;top:50%;z-index:0;width:min(170%,100vw);height:150%;pointer-events:none;transform:translate(-50%,-50%);
+  background:
+    radial-gradient(42% 34% at 30% 40%,rgba(124,108,255,.85),transparent 72%),
+    radial-gradient(36% 30% at 72% 34%,rgba(61,123,255,.7),transparent 72%),
+    radial-gradient(44% 28% at 60% 70%,rgba(200,91,255,.62),transparent 74%),
+    radial-gradient(28% 22% at 22% 70%,rgba(63,214,198,.4),transparent 72%),
+    radial-gradient(20% 14% at 84% 62%,rgba(255,138,91,.34),transparent 72%);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .013' numOctaves='5' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.4 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(closest-side,#000 30%,transparent 100%);mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .013' numOctaves='5' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.4 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(closest-side,#000 30%,transparent 100%);
+  -webkit-mask-size:cover,100% 100%;mask-size:cover,100% 100%;-webkit-mask-composite:source-in;mask-composite:intersect;
+  opacity:.8;animation:gxneb 38s ease-in-out infinite alternate;will-change:transform}
+.gx-neb.n2{width:min(150%,100vw);height:130%;opacity:.55;mix-blend-mode:screen;
+  background:
+    radial-gradient(40% 30% at 66% 44%,rgba(255,120,200,.6),transparent 72%),
+    radial-gradient(38% 30% at 34% 62%,rgba(90,150,255,.7),transparent 72%),
+    radial-gradient(26% 20% at 50% 26%,rgba(190,170,255,.55),transparent 72%);
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .013' numOctaves='5' seed='29'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.4 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(closest-side,#000 25%,transparent 100%);mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009 .013' numOctaves='5' seed='29'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 2.4 0 0 0 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(closest-side,#000 25%,transparent 100%);
+  animation:gxneb2 52s ease-in-out infinite alternate}
+@keyframes gxneb{from{transform:translate(-50%,-50%) scale(1) rotate(-3deg)}to{transform:translate(-52%,-49%) scale(1.14) rotate(5deg)}}
+@keyframes gxneb2{from{transform:translate(-49%,-51%) scale(1.1) rotate(4deg)}to{transform:translate(-51%,-49%) scale(1) rotate(-6deg)}}
+.gal::before{z-index:1;background-color:rgb(var(--acc-rgb) / .22)}
+.gx-sky,.gx-sky2{inset:-22% -6%;z-index:1}
+.gx-ring ellipse{filter:drop-shadow(0 0 6px rgba(190,170,255,.55))}
+.gx-you img{filter:drop-shadow(0 0 34px rgb(var(--acc-rgb) / .6)) drop-shadow(0 0 80px rgba(124,108,255,.35))}
+.gx-pill{background:rgba(10,10,22,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.gal{margin-top:64px;margin-bottom:40px}
+@media (prefers-reduced-motion:reduce){.gx-neb{animation:none}}
 </style>
 </head>
 <body>
@@ -924,14 +955,14 @@ h2,.hold h3,.privacy h2{font-size:var(--t-h2)}
         <p>Cutting back is easier when someone's doing it with you.</p>
       </div>
       <figure class="gal" aria-label="You in the middle, with Mom, Dad, Sister and Brother orbiting around you. Each shows only hours back this week: you 11, Mom 9, Dad 6, Sister 14, Brother 4.">
-        <span class="gx-sky" aria-hidden="true"></span><span class="gx-sky2" aria-hidden="true"></span>
+        <span class="gx-neb" aria-hidden="true"></span><span class="gx-neb n2" aria-hidden="true"></span><span class="gx-sky" aria-hidden="true"></span><span class="gx-sky2" aria-hidden="true"></span>
         <span class="gal-k" aria-hidden="true">This week</span><span class="gal-t" aria-hidden="true"><b>44h</b> back together this week</span>
         <svg class="gx-ring" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="gxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".05"/><stop offset=".55" stop-color="#fff" stop-opacity=".14"/><stop offset="1" stop-color="#fff" stop-opacity=".38"/></linearGradient></defs><ellipse cx="50" cy="50" rx="50" ry="50" stroke="url(#gxg)" stroke-width="6" opacity=".18"/><ellipse cx="50" cy="50" rx="50" ry="50" stroke="url(#gxg)" stroke-width="1.2"/></svg>
-        <div class="gx-you" aria-hidden="true"><img src="assets/thumbs/amethia.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>You</b>11h</span></div>
-        <div class="gx-o" style="--pn:300" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/iridia.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Sister</b>14h</span></div></div></div></div></div>
-        <div class="gx-o" style="--pn:210" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/seriphae.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Mom</b>9h</span></div></div></div></div></div>
-        <div class="gx-o" style="--pn:30" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/obura.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Dad</b>6h</span></div></div></div></div></div>
-        <div class="gx-o" style="--pn:120" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/pyralis.webp" alt="" width="440" height="440" loading="lazy"><span class="gx-pill"><b>Brother</b>4h</span></div></div></div></div></div>
+        <div class="gx-you" aria-hidden="true"><img src="assets/thumbs/amethia.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>You</b>11h</span></div>
+        <div class="gx-o" style="--pn:300" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/iridia.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Sister</b>14h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:210" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/seriphae.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Mom</b>9h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:30" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/obura.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Dad</b>6h</span></div></div></div></div></div>
+        <div class="gx-o" style="--pn:120" aria-hidden="true"><div class="gx-arm"><div class="gx-pos"><div class="gx-un"><div class="gx-p"><img src="assets/thumbs/pyralis.webp" alt="" width="440" height="440" decoding="async"><span class="gx-pill"><b>Brother</b>4h</span></div></div></div></div></div>
       </figure>
       <ul class="fam-list">
         <li><svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9.5" r="2.4"/><path d="M17 14.2c2.2.2 3.6 1.6 4 4.3"/></svg><b>Invite up to five people</b><span>Follow each other's progress.</span></li>

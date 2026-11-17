@@ -1,4 +1,4 @@
-/* obu site hero · live orbs v1.6 (17 Nov 2026 · swap = a 1.7 s cross-fade at one size (Henry: "no jump"), all bodies one width · page accent starts 0.4 s into the swap, not after it · colours follow the orb: glow + accent fades 2.4 s -> 1.4 s, page accent right after the swap · spec claude/site-live-orb-hero-v1.md)
+/* obu site hero · live orbs v1.10 (17 Nov 2026 · aura: true cross-fade, gaussian falloff, softer green, Sylvara rim feathered · v1.6: swap = a 1.7 s cross-fade at one size (Henry: "no jump"), all bodies one width · page accent starts 0.4 s into the swap, not after it · colours follow the orb: glow + accent fades 2.4 s -> 1.4 s, page accent right after the swap · spec claude/site-live-orb-hero-v1.md)
    v1.3: fps guard 40 -> 24 (iPhone Low Power Mode draws at 30 fps, which froze the cycle on the first orb) · ?debug readout.
    Runs the app's real orb engines (assets/orbs-live/<name>.js) on the page through a small DCLogic shim.
    Every 6 s the next orb turns into view: the old one speeds up, shrinks and fades while the new one
@@ -23,14 +23,14 @@
      Site levelled 16 Nov by measuring each live orb at rest against Auralith (Rasenith is held wound up, so it's wider than its app still). */
   var ORBS = [
     { n: 'Auralith', e: 'auralith', key: 'auralith', fit: .663, up: .028, g1: '#7FB0F5', g2: '#BCA6FF', glow: '124 108 255' },
-    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .612,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140' },
+    { n: 'Sylvara',  e: 'sylvara',  key: 'botan',    fit: .612,  up: 0,    g1: '#E6FFB8', g2: '#5FD98A', glow: '110 226 140', gk: .45, gs: .46 },
     { n: 'Rasenith', e: 'rasenith', key: 'rasenith', fit: .640, up: 0,    g1: '#C9E4FF', g2: '#5A9BFF', glow: '90 150 255' },
     { n: 'Filara',   e: 'filara',   key: 'thread',   fit: .703, up: 0,    g1: '#FFC48A', g2: '#D88BFF', glow: '206 120 255' },
     { n: 'Petalis',  e: 'petalis',  key: 'sakura',   fit: .745, up: 0,    g1: '#FFC2D8', g2: '#E2588F', glow: '226 88 143' },
     { n: 'Sumi',     e: 'sumi',     key: 'sumi',     fit: .590, up: .044, g1: '#FFF4E6', g2: '#D9A06A', glow: '255 196 140' }
   ];
   /* build = ms after a swap ends before the next engine is built (idle time) */
-  var T = { every: 6000, build: 2000, out: 1700, inDelay: 0, inDur: 1700, idle: 0.6, fast: 0.9, glow: 1200 };
+  var T = { every: 6000, build: 2000, out: 1700, inDelay: 0, inDur: 1700, idle: 0.6, fast: 0.9, glow: 2200 };
   /* render budget (v1.1): engines draw at 560 × dpr × q; buffer = shown size × min(dpr, 1.5), never over CAP px */
   var DPR = Math.min(window.devicePixelRatio || 1, 2), CAP = 720;
   /* pool: keep every engine after its first turn (paused engines cost no GPU time, a few MB each).
@@ -56,6 +56,8 @@
   function box(o) {
     var k = .76 / o.fit, b = document.createElement('div'); b.className = 'lv-box';
     b.style.cssText = 'position:absolute;left:' + (50 - 50 * k) + '%;top:' + (50 - 50 * k - 100 * o.up * k) + '%;width:' + 100 * k + '%;height:' + 100 * k + '%';
+    /* v1.10: Sylvara's body is a flat disc with a crisp rim; a static radial mask feathers it (loops past the rim fade out softly) */
+    if (o.e === 'sylvara') { var m = 'radial-gradient(closest-side,#000 54%,rgba(0,0,0,.6) 64%,rgba(0,0,0,.25) 76%,rgba(0,0,0,.06) 88%,transparent 98%)'; b.style.webkitMaskImage = m; b.style.maskImage = m; }
     return b;
   }
   /* ?debug: a small on-screen readout of why the orb is / isn't live */
@@ -74,20 +76,26 @@
   (function () {
     var css = document.createElement('style');
     css.textContent = '.hero .orb-stage::before{content:none}' +   /* the layers below replace the CSS glow */
-      '.hglow{position:absolute;inset:-46%;pointer-events:none;opacity:0;will-change:opacity;transition:opacity ' + T.glow + 'ms ease-in-out}' +
+      '.hglow{position:absolute;inset:-60%;pointer-events:none;opacity:0;will-change:opacity;transition:opacity ' + T.glow + 'ms cubic-bezier(.4,0,.2,1)}' +
       '.hglow.on{opacity:1}';
     document.head.appendChild(css);
   })();
   var glows = [];
   function glowTo(o, instant) {
     var d = document.createElement('div'); d.className = 'hglow'; d.setAttribute('aria-hidden', 'true');
-    d.style.background = 'radial-gradient(closest-side,rgb(' + o.glow + ' / .30),rgb(' + o.glow + ' / .10) 45%,rgb(' + o.glow + ' / 0) 72%)';
-    if (instant) d.style.transition = 'none';
+    /* v1.8: gaussian falloff, 17 stops, box 220 % of the stage (inset -60 %) and the tail reaches ~0 at the very edge: no visible disc outline (v1.7 stopped at 94 % of a smaller box with a step) */
+    var st = [], i, r, a;
+    for (i = 0; i <= 16; i++) { r = i / 16; a = i === 16 ? 0 : .30 * (o.gk || 1) * Math.exp(-Math.pow(r / (o.gs || .40), 2)); st.push('rgb(' + o.glow + ' / ' + a.toFixed(4) + ') ' + (r * 100).toFixed(1) + '%'); }
+    d.style.background = 'radial-gradient(closest-side,' + st.join(',') + ')';
     stage.insertBefore(d, host); glows.push(d);
-    if (instant) d.classList.add('on');
-    else requestAnimationFrame(function () { requestAnimationFrame(function () { d.classList.add('on'); }); });
+    var EZ = 'cubic-bezier(.4,0,.2,1)';
+    if (instant || !WAAPI) { d.style.transition = 'none'; d.style.opacity = '1'; }
+    else d.animate([{ opacity: 0 }, { opacity: 1 }], { duration: T.glow, easing: EZ, fill: 'forwards' });   /* v1.8b: Web Animations, so the fade-in and the old layer's fade-out start in the SAME frame (class toggling waited 2 frames: the old one dipped first on a busy thread) */
     var old = glows.slice(0, -1);
-    setTimeout(function () { old.forEach(function (g) { if (g.parentNode) g.parentNode.removeChild(g); var i = glows.indexOf(g); if (i >= 0) glows.splice(i, 1); }); }, instant ? 0 : T.glow + 150);
+    /* v1.7: the old layer fades OUT while the new one fades IN (was: stayed at full opacity, so both stacked = a bright flash, then the old one was deleted = a sudden dim) */
+    /* v1.8 fix: the first layer was built with an inline `transition:none` that stayed on, so it vanished instantly at the first swap (the blink). Every outgoing layer now gets a real fade, starting 300 ms in so brightness never dips. */
+    old.forEach(function (g) { g.style.transition = 'none'; if (instant || !WAAPI) g.style.opacity = '0'; else { g.style.opacity = '1'; g.animate([{ opacity: 1 }, { opacity: 0 }], { duration: T.glow, delay: 300, easing: EZ, fill: 'forwards' }); } });
+    setTimeout(function () { old.forEach(function (g) { if (g.parentNode) g.parentNode.removeChild(g); var i = glows.indexOf(g); if (i >= 0) glows.splice(i, 1); }); }, instant ? 0 : T.glow + 600);
   }
   glowTo(ORBS[0], true);
 
@@ -299,5 +307,5 @@
     var s = sizeOf();
     live.forEach(function (h) { h.inner.style.transform = 'scale(' + (s * .76 / h.o.fit / 560).toFixed(4) + ')'; });
   }).observe(stage);
-  window.__obuHeroState = function () { return { ver: '1.6', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
+  window.__obuHeroState = function () { return { ver: '1.10', live: live.map(function (h) { return h.o.n; }), pooled: Object.keys(pool), cur: cur && cur.o.n, idx: idx, stopped: stopped, canvases: host.querySelectorAll('canvas').length, swap: !!swap, held: live.filter(function (h) { return h.held; }).length, drawing: live.filter(function (h) { return !h.held; }).map(function (h) { return h.o.n; }), glows: glows.length, bufs: [].map.call(host.querySelectorAll('canvas'), function (c) { return c.width; }), perf: perf }; };
 })();
